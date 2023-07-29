@@ -6,6 +6,7 @@ const {
     logIn,
     signOut
 } = require('../controllers/userController');
+const { newTeacher } = require('../controllers/teachersController')
 const upload = require('../utilities/multer');
 
 const express = require('express');
@@ -16,6 +17,7 @@ route.put('/verify/:id/:token', verifyEmail)
 route.put('/re-verify', resendEmailVerification)
 route.post('/login', logIn)
 route.post('/logout/:id', signOut)
+route.post('/newTeacher/:id', upload.single('teacherImage'), newTeacher)
 
 
 

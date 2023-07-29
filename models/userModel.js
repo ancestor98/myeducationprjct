@@ -50,7 +50,11 @@ const userSchema = new mongoose.Schema({
     isVerified: {
         type: Boolean,
         default: false
-    }
+    },
+    teachers: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'teachers'
+    }]
 }, {timestamps: true})
 
 const userModel = mongoose.model('UserInfo', userSchema);
