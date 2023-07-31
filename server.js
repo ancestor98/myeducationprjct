@@ -18,6 +18,10 @@ app.use('/uploads', express.static('uploads'));
 app.use('/progressPal', route)
 
 
+app.get('/', ()=>{
+    res.send('Welcome to ProgressPal, Expect to see more..!')
+})
+
 app.listen(PORT, ()=>{
     console.log('listening on PORT: '+PORT);
 });
