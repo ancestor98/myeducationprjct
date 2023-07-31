@@ -13,10 +13,10 @@ const studentSchema = new mongoose.Schema({
     studentEmail: {
         type: String
     },
-    password: {
+    pinNumber: {
         type: String
     },
-    confirmPassword: {
+    studentPassport: {
         type: String
     },
     link: {

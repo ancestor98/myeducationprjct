@@ -1,3 +1,4 @@
+const { string } = require('@hapi/joi');
 const mongoose = require('mongoose');
 
 const userSchema = new mongoose.Schema({
@@ -24,9 +25,9 @@ const userSchema = new mongoose.Schema({
         type: String
     },
     regNo: {
-        type: Number,
+        type: String,
         unique: true,
-        default: null
+        default: 0
     },
     password: {
         type: String,

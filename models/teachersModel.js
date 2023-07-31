@@ -10,6 +10,9 @@ const teacherSchema = new mongoose.Schema({
     teacherAge: {
         type: String
     },
+    teacherEmail: {
+        type: String
+    },
     teacherImage: {
         type: String
     },
