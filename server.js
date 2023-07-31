@@ -18,7 +18,7 @@ app.use('/uploads', express.static('uploads'));
 app.use('/progressPal', route)
 
 
-app.get('/', ()=>{
+app.get('/', (req, res)=>{
     res.send('Welcome to ProgressPal, Expect to see more..!')
 })
 
