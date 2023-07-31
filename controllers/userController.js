@@ -24,7 +24,8 @@ const register = async (req, res)=>{
             website,
         } = req.body;
         // console.log(req.file)
-        const userLogo = req.file.path;
+        // const userLogo = req.file.path;
+        const userLogo = req.files.schoolLogo.tempFilePath
         const uploadLogo = await cloudinary.uploader.upload(userLogo);
 
         if (password !== confirmPassword) {
@@ -56,7 +57,7 @@ const register = async (req, res)=>{
                 const user = new userModel(data);
                 const savedUser = await user.save();
                 const token = await genToken(savedUser._id, '3m');
-                await fs.unlinkSync(req.file.path);
+                // await fs.unlinkSync(req.file.path);
                 const subject = 'ProgressPal - Kindly Verify your School Registration'
                 const link = `${req.protocol}://${req.get('host')}/progressPal/verify/${savedUser._id}/${token}`
                 const message = `Welcome to ProgressPal, we are pleased to work with your School: ${schoolName} to better the education system of Nigeria. Kindly use this link: ${link} to verify your school account. Kindly note that this link will expire after 5(five) Minutes.`
