@@ -89,6 +89,7 @@ const teacherLogin = async (req, res)=>{
     try {
         const { teacherEmail, password } = req.body;
         const user = await teacherModel.findOne({teacherEmail});
+        // console.log(user)
         if (!user) {
             res.status(404).json({
                 message: `Teacher with Email: ${teacherEmail} not found.`

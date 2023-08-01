@@ -22,7 +22,10 @@ const {
     deleteSchoolTeacher,
     signOutTeacher
 } = require('../controllers/teachersController')
-const { newStudent } = require('../controllers/studentsController');
+const { 
+    newStudent,
+    studentLogin 
+} = require('../controllers/studentsController');
 const upload = require('../utilities/multer');
 
 const express = require('express');
@@ -61,8 +64,8 @@ route.delete('/deleteTeacher/:id', deleteSchoolTeacher)
 
 
 // Route for Students Alone.
-route.post('/newStudent/:id', upload.single('studentPassport'), newStudent)
-
+route.post('/newStudent/:id', newStudent)
+route.post('/loginStudent', studentLogin)
 
 
 
