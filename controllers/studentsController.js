@@ -306,6 +306,57 @@ const signOutStudent = async (req, res)=>{
 
 
 
+// Read all Students
+const readAllStudent = async (req, res)=>{
+    try {
+        const students = await studentModel.find()
+        if (students == 0) {
+            res.status(404).json({
+                message: 'No students Record'
+            })
+        } else {
+            res.status(200).json({
+                message: 'All students Records',
+                data: students
+            })
+        }
+    } catch (error) {
+        res.status(500).json({
+            message: error.message
+        })
+    }
+};
+
+
+
+// Read One Teacher
+const readOneStudent = async (req, res)=>{
+    try {
+        const studentId = req.params.studentId;
+        const student = await studentModel.findById(studentId)
+        if (student == 0) {
+            res.status(404).json({
+                message: 'No teacher Record'
+            })
+        } else {
+            res.status(200).json({
+                message: 'The teacher Record',
+                data: student
+            })
+        }
+    } catch (error) {
+        res.status(500).json({
+            message: error.message
+        })
+    }
+}
+
+
+
+
+
+
+
 
 module.exports = {
     newStudent,
@@ -315,5 +366,7 @@ module.exports = {
     resetPasswordStudent,
     updateSchoolStudent,
     deleteSchoolStudent,
-    signOutStudent
+    signOutStudent,
+    readAllStudent,
+    readOneStudent
 }

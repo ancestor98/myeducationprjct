@@ -10,7 +10,9 @@ const {
     resetPassword,
     updateSchool,
     deleteSchool,
-    teacherLink
+    teacherLink,
+    readAllSchools,
+    readOneSchool
 } = require('../controllers/userController');
 const {
     newTeacher,
@@ -20,7 +22,9 @@ const {
     resetPasswordTeacher,
     updateSchoolTeacher,
     deleteSchoolTeacher,
-    signOutTeacher
+    signOutTeacher,
+    readAllTeachers,
+    readOneTeacher
 } = require('../controllers/teachersController')
 const { 
     newStudent,
@@ -30,7 +34,9 @@ const {
     resetPasswordStudent,
     updateSchoolStudent,
     deleteSchoolStudent,
-    signOutStudent 
+    signOutStudent,
+    readAllStudent,
+    readOneStudent
 } = require('../controllers/studentsController');
 const upload = require('../utilities/multer');
 
@@ -51,6 +57,8 @@ route.put("/reset-password/:id/:token", resetPassword);
 route.put('/updateSchool/:id', upload.single('schoolLogo'), updateSchool)
 route.delete('/deleteSchool/:id', deleteSchool)
 route.post('/teacherLink/:id', teacherLink)
+route.get('/readAllSchools', readAllSchools);
+route.get('/readOneSchool/:schoolId', readOneSchool);
 
 
 // Route for Teachers Alone.
@@ -63,6 +71,8 @@ route.post("/forgot-passwordTeacher", forgotPasswordTeacher);
 route.put("/reset-passwordTeacher/:id/:token", resetPasswordTeacher);
 route.put('/updateTeacher/:id', updateSchoolTeacher)
 route.delete('/deleteTeacher/:id', deleteSchoolTeacher)
+route.get('/readAllTeachers', readAllTeachers);
+route.get('/readOneTeacher/:teacherId', readOneTeacher);
 
 
 
@@ -73,8 +83,12 @@ route.post('/logoutStudent/:id', signOutStudent)
 route.put("/changePasswordStudent/:id", changePasswordStudent);
 route.post("/forgot-passwordStudent", forgotPasswordStudent);
 route.put("/reset-passwordStudent/:id/:token", resetPasswordStudent);
-route.put('/updateStudent/:id', updateSchoolStudent)
-route.delete('/deleteStudent/:id', deleteSchoolStudent)
+route.put('/updateStudent/:id', updateSchoolStudent);
+route.delete('/deleteStudent/:id', deleteSchoolStudent);
+route.get('/readAllStudent', readAllStudent);
+route.get('/readOneStudent/:studentId', readOneStudent);
+
+
 
 
 module.exports = { route };

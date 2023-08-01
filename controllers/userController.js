@@ -433,7 +433,50 @@ const deleteSchool = async (req, res)=>{
 
 
 
+// Read all Users
+const readAllSchools = async (req, res)=>{
+    try {
+        const Schools = await userModel.find()
+        if (Schools == 0) {
+            res.status(404).json({
+                message: 'No Schools Record'
+            })
+        } else {
+            res.status(200).json({
+                message: 'All Schools Records',
+                data: Schools
+            })
+        }
+    } catch (error) {
+        res.status(500).json({
+            message: error.message
+        })
+    }
+};
 
+
+
+// Read One User
+const readOneSchool = async (req, res)=>{
+    try {
+        const schoolId = req.params.schoolId;
+        const school = await userModel.findById(schoolId)
+        if (school == 0) {
+            res.status(404).json({
+                message: 'No school Record'
+            })
+        } else {
+            res.status(200).json({
+                message: 'The school Record',
+                data: school
+            })
+        }
+    } catch (error) {
+        res.status(500).json({
+            message: error.message
+        })
+    }
+};
 
 
 
@@ -485,5 +528,7 @@ module.exports = {
     resetPassword,
     updateSchool,
     deleteSchool,
-    teacherLink
+    teacherLink,
+    readAllSchools,
+    readOneSchool
 };
