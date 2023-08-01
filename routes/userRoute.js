@@ -44,7 +44,7 @@ route.delete('/deleteSchool/:id', deleteSchool)
 route.post('/teacherLink/:id', teacherLink)
 
 
-http://progresspal-8rxj.onrender.com/progressPal/newTeacher/64c8b9fed81e56d697e2eb93/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySUQiOiI2NGM4YjlmZWQ4MWU1NmQ2OTdlMmViOTMiLCJpYXQiOjE2OTA4Nzc1MzEsImV4cCI6MTY5MDg3OTMzMX0.QzlueGbYFH1ngNnLYmw--1RDbWWfeiI8IYA3D4D9EQg
+// http://progresspal-8rxj.onrender.com/progressPal/newTeacher/64c8b9fed81e56d697e2eb93/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySUQiOiI2NGM4YjlmZWQ4MWU1NmQ2OTdlMmViOTMiLCJpYXQiOjE2OTA4Nzc1MzEsImV4cCI6MTY5MDg3OTMzMX0.QzlueGbYFH1ngNnLYmw--1RDbWWfeiI8IYA3D4D9EQg
 
 // Route for Teachers Alone.
 // route.post('/newTeacher/:id/:token', upload.single('teacherImage'), newTeacher)
