@@ -304,6 +304,9 @@ const teacherLink = async (req, res)=>{
             subject,
             message
         })
+        res.status(200).json({
+            message: `Link for registration successfully sent to ${teacherEmail}`
+        })
     } catch (error) {
         res.status(500).json({
             message: error.message
