@@ -213,7 +213,8 @@ const updateSchoolTeacher = async (req, res)=>{
             teacherAge,
             teacherEmail,
         } = req.body;
-        const userLogo = req.file.path;
+        // const userLogo = req.file.path;
+        const userLogo = req.files.teacherImage.tempFilePath;
         const { id } = req.params;
         const user = await teacherModel.findById(id);
         if(!user) {
@@ -238,7 +239,7 @@ const updateSchoolTeacher = async (req, res)=>{
                 const newImage = await cloudinary.uploader.upload(userLogo)
                 console.log(newImage.secure_url)
                 data.teacherImage = newImage.secure_url
-                await fs.unlinkSync(req.file.path);
+                // await fs.unlinkSync(req.file.path);
                 const updatedTeacherwithImage = await teacherModel.findByIdAndUpdate(id, data, {new: true});
                 if (!updatedTeacherwithImage) {
                     res.status(400).json({
