@@ -21,6 +21,43 @@ NOTE: The school Admin is responsible for sending a link of registration to the 
 NOTE: The Teachers register each student with a PinNumber of which they can later update their profile to change the password later on.
 
 
+DATA NEEDED FOR SCHOOL REGISTRATION
+{
+    schoolName,
+    schoolEmail,
+    schoolAddress,
+    state,
+    country,
+    schoolLogo,
+    regNo,
+    password,
+    confirmPassword,
+    website
+}
+
+DATA NEEDED FOR TEACHER REGISTRATION
+{
+    teacherName,
+    teacherClass,
+    teacherAge,
+    teacherEmail,
+    teacherImage,
+    password,
+    confirmPassword
+}
+
+DATA NEEDED FOR TEACHER REGISTRATION
+{
+    studentName,
+    studentClass,
+    studentAge,
+    studentEmail,
+    password,
+    studentPassport
+}
+
+
+
 ONBOARDING FOR SCHOOLS:
 Registration: https://progresspal-8rxj.onrender.com/progressPal/register                                // Post Method
 Verify Email: https://progresspal-8rxj.onrender.com/progressPal/verify/:id/:token                       // Put Method
