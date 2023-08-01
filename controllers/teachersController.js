@@ -28,7 +28,8 @@ const newTeacher = async (req, res)=>{
                     password,
                     confirmPassword
                 } = req.body;
-                const teacherImage = req.file.path;
+                // const teacherImage = req.file.path;
+                const teacherImage = req.files.teacherImage.tempFilePath
                 const uploadImage = await cloudinary.uploader.upload(teacherImage);
                 if (password !== confirmPassword) {
                     res.status(400).json({
@@ -59,7 +60,7 @@ const newTeacher = async (req, res)=>{
                         savedTeacher = await teacher.save();
                         user.teachers.push(savedTeacher);
                         user.save();
-                        await fs.unlinkSync(req.file.path);
+                        // await fs.unlinkSync(req.file.path);
                         const subject = 'ProgressPal - welcome!';
                         const message = `Welcome to ProgressPal, we are pleased to have you ${savedTeacher.teacherName} work with your School: ${savedTeacher.link.schoolName} on this Platform to better the education system of Nigeria. Feel free to give us feedback on what needs to be improved on the platform. You can contact us on whatsapp with the Phone Number: +2348100335322. Thank you.`
                         emailSender({

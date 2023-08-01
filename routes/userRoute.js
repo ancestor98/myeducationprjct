@@ -54,7 +54,8 @@ route.post('/logoutTeacher/:id', signOutTeacher)
 route.put("/changePasswordTeacher/:id", changePasswordTeacher);
 route.post("/forgot-passwordTeacher", forgotPasswordTeacher);
 route.put("/reset-passwordTeacher/:id/:token", resetPasswordTeacher);
-route.put('/updateTeacher/:id', upload.single('teacherImage'), updateSchoolTeacher)
+// route.put('/updateTeacher/:id', upload.single('teacherImage'), updateSchoolTeacher)
+route.put('/updateTeacher/:id', updateSchoolTeacher)
 route.delete('/deleteTeacher/:id', deleteSchoolTeacher)
 
 
