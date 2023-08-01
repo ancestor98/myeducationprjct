@@ -37,7 +37,7 @@ const newStudent = async (req, res)=>{
                 studentClass,
                 studentAge,
                 studentEmail: studentEmail.toLowerCase(),
-                pinNumber,
+                pinNumber: hashPassword,
                 studentPassport: uploadImage.secure_url
             }
             const student = await new studentModel(data);
