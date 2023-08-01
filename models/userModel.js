@@ -27,7 +27,6 @@ const userSchema = new mongoose.Schema({
     regNo: {
         type: String,
         unique: true,
-        default: 0
     },
     password: {
         type: String,
