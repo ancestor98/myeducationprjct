@@ -328,7 +328,8 @@ const updateSchool = async (req, res)=>{
             regNo,
             website,
         } = req.body;
-        const userLogo = req.file.path;
+        // const userLogo = req.file.path;
+        const userLogo = req.files.schoolLogo.tempFilePath
         const { id } = req.params;
         const user = await userModel.findById(id);
 
@@ -360,7 +361,7 @@ const updateSchool = async (req, res)=>{
                 const newLogo = await cloudinary.uploader.upload(userLogo)
                 console.log(newLogo.secure_url)
                 data.schoolLogo = newLogo.secure_url
-                await fs.unlinkSync(req.file.path);
+                // await fs.unlinkSync(req.file.path);
                 const updatedSchoolwithLogo = await userModel.findByIdAndUpdate(id, data, {new: true});
                 if (!updatedSchoolwithLogo) {
                     res.status(400).json({
