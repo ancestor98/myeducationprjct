@@ -24,7 +24,13 @@ const {
 } = require('../controllers/teachersController')
 const { 
     newStudent,
-    studentLogin 
+    studentLogin,
+    changePasswordStudent,
+    forgotPasswordStudent,
+    resetPasswordStudent,
+    updateSchoolStudent,
+    deleteSchoolStudent,
+    signOutStudent 
 } = require('../controllers/studentsController');
 const upload = require('../utilities/multer');
 
@@ -47,8 +53,6 @@ route.delete('/deleteSchool/:id', deleteSchool)
 route.post('/teacherLink/:id', teacherLink)
 
 
-// http://progresspal-8rxj.onrender.com/progressPal/newTeacher/64c8b9fed81e56d697e2eb93/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySUQiOiI2NGM4YjlmZWQ4MWU1NmQ2OTdlMmViOTMiLCJpYXQiOjE2OTA4Nzc1MzEsImV4cCI6MTY5MDg3OTMzMX0.QzlueGbYFH1ngNnLYmw--1RDbWWfeiI8IYA3D4D9EQg
-
 // Route for Teachers Alone.
 // route.post('/newTeacher/:id/:token', upload.single('teacherImage'), newTeacher)
 route.post('/newTeacher/:id/:token', newTeacher)
@@ -57,7 +61,6 @@ route.post('/logoutTeacher/:id', signOutTeacher)
 route.put("/changePasswordTeacher/:id", changePasswordTeacher);
 route.post("/forgot-passwordTeacher", forgotPasswordTeacher);
 route.put("/reset-passwordTeacher/:id/:token", resetPasswordTeacher);
-// route.put('/updateTeacher/:id', upload.single('teacherImage'), updateSchoolTeacher)
 route.put('/updateTeacher/:id', updateSchoolTeacher)
 route.delete('/deleteTeacher/:id', deleteSchoolTeacher)
 
@@ -66,7 +69,12 @@ route.delete('/deleteTeacher/:id', deleteSchoolTeacher)
 // Route for Students Alone.
 route.post('/newStudent/:id', newStudent)
 route.post('/loginStudent', studentLogin)
-
+route.post('/logoutStudent/:id', signOutStudent)
+route.put("/changePasswordStudent/:id", changePasswordStudent);
+route.post("/forgot-passwordStudent", forgotPasswordStudent);
+route.put("/reset-passwordStudent/:id/:token", resetPasswordStudent);
+route.put('/updateStudent/:id', updateSchoolStudent)
+route.delete('/deleteStudent/:id', deleteSchoolStudent)
 
 
 module.exports = { route };

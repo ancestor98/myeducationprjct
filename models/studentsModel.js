@@ -13,7 +13,7 @@ const studentSchema = new mongoose.Schema({
     studentEmail: {
         type: String
     },
-    pinNumber: {
+    password: {
         type: String
     },
     studentPassport: {
