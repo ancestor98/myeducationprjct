@@ -46,7 +46,8 @@ const route = express.Router();
 
 // Route for Schools Admin Alone.
 // route.post('/register', upload.single('schoolLogo'), validateUser, register)
-route.post('/register', validateUser, register)
+// route.post('/register', validateUser, register)
+route.post('/register', register)
 route.put('/verify/:id/:token', verifyEmail)
 route.put('/re-verify', resendEmailVerification)
 route.post('/login', logIn)
