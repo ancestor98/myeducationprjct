@@ -56,8 +56,8 @@ const newStudent = async (req, res)=>{
             })
             console.log("savedStudent")
             res.status(200).json({
-                message: 'Teacher saved successfully',
-                data: savedStudent
+                message: 'Student saved successfully',
+                data
             })
         }
     } catch (error) {
