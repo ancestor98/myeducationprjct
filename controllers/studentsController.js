@@ -222,11 +222,11 @@ const updateSchoolStudent = async (req, res)=>{
                 const updatedTeacherwithImage = await studentModel.findByIdAndUpdate(id, data, {new: true});
                 if (!updatedTeacherwithImage) {
                     res.status(400).json({
-                        message: 'Could not update Teacher Info with Image'
+                        message: 'Could not update student Info with Image'
                     })
                 } else {
                     res.status(200).json({
-                        message: 'Successfully Updated Teacher Info with Image',
+                        message: 'Successfully Updated student Info with Image',
                         data: updatedTeacherwithImage
                     })
                 }
@@ -234,11 +234,11 @@ const updateSchoolStudent = async (req, res)=>{
                 const updatedTeacher = await studentModel.findByIdAndUpdate(id, data, {new: true});
                 if (!updatedTeacher) {
                     res.status(400).json({
-                        message: 'Could not update Teacher Info with Image'
+                        message: 'Could not update student Info with Image'
                     })
                 } else {
                     res.status(200).json({
-                        message: 'Successfully Updated Teacher Info with Image',
+                        message: 'Successfully Updated student Info with Image',
                         data: updatedTeacher
                     })
                 }
@@ -267,11 +267,11 @@ const deleteSchoolStudent = async (req, res)=>{
             const deletedTeacher = await studentModel.findByIdAndDelete(id);
             if (!deletedTeacher) {
                 res.status(400).json({
-                    message: 'Error deleting School, Try Again.'
+                    message: 'Error deleting student Info, Try Again.'
                 })
             } else {
                 res.status(200).json({
-                    message: 'School Successfully deleted',
+                    message: 'Student Successfully deleted',
                     data: user
                 })
             }
