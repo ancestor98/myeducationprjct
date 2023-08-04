@@ -46,7 +46,7 @@ DATA NEEDED FOR TEACHER REGISTRATION
     confirmPassword
 }
 
-DATA NEEDED FOR TEACHER REGISTRATION
+DATA NEEDED FOR STUDENT REGISTRATION
 {
     studentName,
     studentClass,
@@ -59,10 +59,10 @@ DATA NEEDED FOR TEACHER REGISTRATION
 
 
 ONBOARDING FOR SCHOOLS:
-Registration: https://progresspal-8rxj.onrender.com/progressPal/register                                // Post Method
-Verify Email: https://progresspal-8rxj.onrender.com/progressPal/verify/:id/:token                       // Put Method
+Registration: https://progresspal-8rxj.onrender.com/progressPal/register                                // Post Method  DONE
+Verify Email: https://progresspal-8rxj.onrender.com/progressPal/verify/:id/:token                       // Put Method   
 Re-send Email Verification: https://progresspal-8rxj.onrender.com/progressPal/re-verify                 // Put Method
-Login: https://progresspal-8rxj.onrender.com/progressPal/login                                          // Post Method
+Login: https://progresspal-8rxj.onrender.com/progressPal/login                                          // Post Method  DONE
 signOut: https://progresspal-8rxj.onrender.com/progressPal/logout/:id                                   // Post Method
 Change Password: https://progresspal-8rxj.onrender.com/progressPal/changePassword/:id                   // Put Method
 Forgot Password: https://progresspal-8rxj.onrender.com/progressPal/forgot-password                      // Post Method
