@@ -11,7 +11,7 @@ const validateUser = async (req, res, next)=>{
         password: Joi.string().required().pattern(/^[A-Za-z0-9]{6}$/),
         confirmPassword: Joi.string(),
         website: Joi.string().pattern(/^www\..+\..+$/),
-        regNo: Joi.string().pattern(/^[0-9]{5}[A-Z]{2}$/)
+        regNo: Joi.string().pattern(/^[0-9]{5}[A-Z]{2}$/).required()
     })
     const { error } = schema.validate(req.body);
     if(error) {
