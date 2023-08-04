@@ -6,9 +6,9 @@ const validateUser = async (req, res, next)=>{
         schoolName: Joi.string().pattern(/^[a-zA-Z\s]+$/).required(),
         schoolEmail: Joi.string().pattern(/^[^\s@]+@[^\s@]+\.[^\s@]+$/).required(),
         schoolAddress: Joi.string().pattern(/^[A-Za-z0-9\s.,'"-]+$/).required(),
-        state: Joi.string(),
-        country: Joi.string(),
-        password: Joi.string(),
+        state: Joi.string().required(),
+        country: Joi.string().required(),
+        password: Joi.string().required().pattern(/^[A-Za-z0-9]{6}$/),
         confirmPassword: Joi.string(),
         website: Joi.string().pattern(/^www\..+\..+$/),
         regNo: Joi.string().pattern(/^[0-9]{5}[A-Z]{2}$/)

@@ -4,8 +4,7 @@ const mongoose = require('mongoose');
 const userSchema = new mongoose.Schema({
     schoolName: {
         type: String,
-        required: [true, 'School name is Required'],
-        unique: true
+        required: [true, 'School name is Required']
     },
     schoolEmail: {
         type: String,
@@ -16,17 +15,19 @@ const userSchema = new mongoose.Schema({
         required: [true, 'School address is Required']
     },
     state: {
-        type: String
+        type: String,
+        required: [true, 'School State is Required']
     },
     country: {
-        type: String
+        type: String,
+        required: [true, 'School Country is Required']
     },
     schoolLogo: {
         type: String
     },
     regNo: {
         type: String,
-        unique: true
+        required: [true, 'School name is Required']
     },
     password: {
         type: String,
