@@ -70,7 +70,7 @@ const newTeacher = async (req, res)=>{
                         })
                         res.status(200).json({
                             message: 'Teacher saved successfully',
-                            data: savedTeacher
+                            savedTeacher
                         })
                     }
                 }
