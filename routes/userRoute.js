@@ -61,6 +61,14 @@ const {
     readAllStudent,
     readOneStudent
 } = require('../controllers/studentsController');
+
+
+
+
+//  RESULTS
+const {
+    createResult
+} = require('../controllers/resultController');
 const upload = require('../utilities/multer');
 
 const express = require('express');
@@ -113,6 +121,7 @@ route.get('/readAllStudent', readAllStudent);
 route.get('/readOneStudent/:studentId', readOneStudent);
 
 
-
+// Route for results Alone.
+route.post('/addResult/:studentId', createResult);
 
 module.exports = { route };
