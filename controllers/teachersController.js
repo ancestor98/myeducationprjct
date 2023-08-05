@@ -7,6 +7,8 @@ const fs = require('fs');
 const cloudinary = require('../utilities/cloudinary');
 const { genToken, decodeToken } = require('../utilities/jwt');
 const emailSender = require('../middlewares/email');
+const { genEmailReg } = require('../utilities/teacherEmail/register')
+const { forgetPassEmail } = require('../utilities/teacherEmail/forgetpassword')
 
 
 
@@ -60,13 +62,14 @@ const newTeacher = async (req, res)=>{
                         savedTeacher = await teacher.save();
                         user.teachers.push(savedTeacher);
                         user.save();
-                        // await fs.unlinkSync(req.file.path);
                         const subject = 'ProgressPal - welcome!';
-                        const message = `Welcome to ProgressPal, we are pleased to have you ${savedTeacher.teacherName} work with your School: ${savedTeacher.link.schoolName} on this Platform to better the education system of Nigeria. Feel free to give us feedback on what needs to be improved on the platform. You can contact us on whatsapp with the Phone Number: +2348100335322. Thank you.`
+                        link = `https://progresspal-8rxj.onrender.com`
+                        // const message = `Welcome to ProgressPal, we are pleased to have you ${savedTeacher.teacherName} work with your School: ${savedTeacher.link.schoolName} on this Platform to better the education system of Nigeria. Feel free to give us feedback on what needs to be improved on the platform. You can contact us on whatsapp with the Phone Number: +2348100335322. Thank you.`
+                        const html = await genEmailReg(link)
                         emailSender({
                             email: teacherEmail,
                             subject,
-                            message
+                            html
                         })
                         res.status(200).json({
                             message: 'Teacher saved successfully',
@@ -158,11 +161,12 @@ const forgotPasswordTeacher = async (req, res)=>{
             const token = await genToken(isEmail._id, '30m')
             const subject = 'ProgressPal - Link for Reset password'
             const link = `${req.protocol}://${req.get('host')}/progressPal/reset-passwordTeacher/${isEmail._id}/${token}`
-            const message = `Forgot your Password? it's okay, kindly use this link ${link} to re-set your account password. Please note that this link will expire after 5(five) Minutes.`
+            // const message = `Forgot your Password? it's okay, kindly use this link ${link} to re-set your account password. Please note that this link will expire after 5(five) Minutes.`
+            const html = await forgetPassEmail(link)
             emailSender({
                 email: teacherEmail,
                 subject,
-                message
+                html
             });
             res.status(200).json({
                 message: 'Email sent successfully, please check your Email for the link to reset your Password'
@@ -184,7 +188,7 @@ const resetPasswordTeacher = async (req, res)=>{
         const { password } = req.body;
         const salt = bcrypt.genSaltSync(10);
         const hash = bcrypt.hashSync(password, salt);
-        // const userInfo = await decodeToken(token);
+        const userInfo = await decodeToken(token);
         // console.log(userInfo);
         const user = await teacherModel.findByIdAndUpdate(id, { password: hash }, { new: true });
         const userConfirm = await teacherModel.findByIdAndUpdate(id, { confirmPassword: hash }, { new: true });
@@ -238,9 +242,7 @@ const updateSchoolTeacher = async (req, res)=>{
                 const public_id = user.teacherImage.split('/').pop().split('.')[0];
                 await cloudinary.uploader.destroy(public_id);
                 const newImage = await cloudinary.uploader.upload(userLogo)
-                console.log(newImage.secure_url)
                 data.teacherImage = newImage.secure_url
-                // await fs.unlinkSync(req.file.path);
                 const updatedTeacherwithImage = await teacherModel.findByIdAndUpdate(id, data, {new: true});
                 if (!updatedTeacherwithImage) {
                     res.status(400).json({

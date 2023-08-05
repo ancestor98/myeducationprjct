@@ -19,11 +19,14 @@ const decodeToken = async (token)=>{
     await jwt.verify(token, process.env.JWT_SECRET, async (err, data)=>{
         if(err) {
             throw err;
+            // res.status(200).json({
+            //     message: 'Link Token Expired, Please try again'
+            // });
         } else {
             user = await userModel.findById(data.userID);
         }
     })
-    return user;
+    return user
 };
 
 module.exports = {

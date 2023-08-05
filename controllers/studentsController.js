@@ -8,6 +8,9 @@ const fs = require('fs');
 const cloudinary = require('../utilities/cloudinary');
 const { genToken, decodeToken } = require('../utilities/jwt');
 const emailSender = require('../middlewares/email');
+const { forgetPassEmail } = require('../utilities/studentEmail/forgetpassword')
+const { genEmailReg } = require('../utilities/studentEmail/register')
+const { link } = require('@hapi/joi');
 
 
 const newStudent = async (req, res)=>{
@@ -45,16 +48,14 @@ const newStudent = async (req, res)=>{
             savedStudent = await student.save();
             teacher.students.push(savedStudent);
             teacher.save();
-            // console.log(savedStudent)
-            // await fs.unlinkSync(req.file.path);
             const subject = 'ProgressPal - welcome!';
-            const message = `Welcome to ProgressPal, we are pleased to have you ${savedStudent.studentName}, as a Student registered with School: ${teacher.link.schoolName} on this Platform to better the education system of Nigeria. Your Teacher ${savedStudent.link.teacherName} will be responsible for your performance/s. Feel free to give us feedback on what needs to be improved on the platform. You can contact us on whatsapp with the Phone Number: +2348100335322. Thank you.`
+            // const message = `Welcome to ProgressPal, we are pleased to have you ${savedStudent.studentName}, as a Student registered with School: ${teacher.link.schoolName} on this Platform to better the education system of Nigeria. Your Teacher ${savedStudent.link.teacherName} will be responsible for your performance/s. Feel free to give us feedback on what needs to be improved on the platform. You can contact us on whatsapp with the Phone Number: +2348100335322. Thank you.`
+            const html = await genEmailReg(link, id)
             emailSender({
                 email: studentEmail,
                 subject,
-                message
+                html
             })
-            console.log("savedStudent")
             res.status(200).json({
                 message: 'Student saved successfully',
                 data
@@ -140,11 +141,12 @@ const forgotPasswordStudent = async (req, res)=>{
             const token = await genToken(isEmail._id, '30m')
             const subject = 'ProgressPal - Link for Reset password'
             const link = `${req.protocol}://${req.get('host')}/progressPal/reset-passwordStudent/${isEmail._id}/${token}`
-            const message = `Forgot your Password? it's okay, kindly use this link ${link} to re-set your account password. Please note that this link will expire after 5(five) Minutes.`
+            // const message = `Forgot your Password? it's okay, kindly use this link ${link} to re-set your account password. Please note that this link will expire after 5(five) Minutes.`
+            const html = await forgetPassEmail(link)
             emailSender({
                 email: studentEmail,
                 subject,
-                message
+                html
             });
             res.status(200).json({
                 message: 'Email sent successfully, please check your Email for the link to reset your Password'
@@ -216,9 +218,7 @@ const updateSchoolStudent = async (req, res)=>{
                 const public_id = user.studentPassport.split('/').pop().split('.')[0];
                 await cloudinary.uploader.destroy(public_id);
                 const newImage = await cloudinary.uploader.upload(userLogo)
-                console.log(newImage.secure_url)
                 data.studentPassport = newImage.secure_url
-                // await fs.unlinkSync(req.file.path);
                 const updatedTeacherwithImage = await studentModel.findByIdAndUpdate(id, data, {new: true});
                 if (!updatedTeacherwithImage) {
                     res.status(400).json({

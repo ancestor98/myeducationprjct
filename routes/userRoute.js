@@ -1,4 +1,27 @@
-const validateUser = require('../middlewares/userValidate');
+const {
+    validateUser,
+    verifyEmailVal,
+    loginVal,
+    changePassVal,
+    forgotPassVal,
+    teacherEmailVal,
+    validateUpdateUser
+} = require('../middlewares/userValidate');
+const {
+    
+    validateteacher,
+    loginValTeacher,
+    changePassValTeacher,
+    forgotPassValTeacher,
+    validateUpdateteacher
+} = require('../middlewares/teacherValidate');
+const {
+    validateStudent,
+    loginValStudent,
+    changePassValStudent,
+    forgotPassValStudent,
+    validateUpdateStudent
+} = require('../middlewares/studentValidate')
 const {
     register,
     verifyEmail,
@@ -49,28 +72,28 @@ const route = express.Router();
 // route.post('/register', validateUser, register)
 route.post('/register', validateUser, register)
 route.put('/verify/:id/:token', verifyEmail)
-route.put('/re-verify', resendEmailVerification)
-route.post('/login', logIn)
+route.put('/re-verify', verifyEmailVal, resendEmailVerification)
+route.post('/login', loginVal, logIn)
 route.post('/logout/:id', signOut)
-route.put("/changePassword/:id", changePassword);
-route.post("/forgot-password", forgotPassword);
-route.put("/reset-password/:id/:token", resetPassword);
-route.put('/updateSchool/:id', updateSchool)
+route.put("/changePassword/:id", changePassVal, changePassword);
+route.post("/forgot-password", forgotPassVal, forgotPassword);
+route.put("/reset-password/:id/:token", changePassVal, resetPassword);
+route.put('/updateSchool/:id', validateUpdateUser, updateSchool)
 route.delete('/deleteSchool/:id', deleteSchool)
-route.post('/teacherLink/:id', teacherLink)
+route.post('/teacherLink/:id', teacherEmailVal, teacherLink)
 route.get('/readAllSchools', readAllSchools);
 route.get('/readOneSchool/:schoolId', readOneSchool);
 
 
 // Route for Teachers Alone.
 // route.post('/newTeacher/:id/:token', upload.single('teacherImage'), newTeacher)
-route.post('/newTeacher/:id/:token', newTeacher)
-route.post('/loginTeacher', teacherLogin)
+route.post('/newTeacher/:id/:token', validateteacher, newTeacher)
+route.post('/loginTeacher', loginValTeacher, teacherLogin)
 route.post('/logoutTeacher/:id', signOutTeacher)
-route.put("/changePasswordTeacher/:id", changePasswordTeacher);
-route.post("/forgot-passwordTeacher", forgotPasswordTeacher);
-route.put("/reset-passwordTeacher/:id/:token", resetPasswordTeacher);
-route.put('/updateTeacher/:id', updateSchoolTeacher)
+route.put("/changePasswordTeacher/:id", changePassValTeacher, changePasswordTeacher);
+route.post("/forgot-passwordTeacher", forgotPassValTeacher, forgotPasswordTeacher);
+route.put("/reset-passwordTeacher/:id/:token", changePassValTeacher, resetPasswordTeacher);
+route.put('/updateTeacher/:id', validateUpdateteacher, updateSchoolTeacher)
 route.delete('/deleteTeacher/:id', deleteSchoolTeacher)
 route.get('/readAllTeachers', readAllTeachers);
 route.get('/readOneTeacher/:teacherId', readOneTeacher);
@@ -78,13 +101,13 @@ route.get('/readOneTeacher/:teacherId', readOneTeacher);
 
 
 // Route for Students Alone.
-route.post('/newStudent/:id', newStudent)
-route.post('/loginStudent', studentLogin)
+route.post('/newStudent/:id', validateStudent, newStudent)
+route.post('/loginStudent', loginValStudent, studentLogin)
 route.post('/logoutStudent/:id', signOutStudent)
-route.put("/changePasswordStudent/:id", changePasswordStudent);
-route.post("/forgot-passwordStudent", forgotPasswordStudent);
-route.put("/reset-passwordStudent/:id/:token", resetPasswordStudent);
-route.put('/updateStudent/:id', updateSchoolStudent);
+route.put("/changePasswordStudent/:id", changePassValStudent, changePasswordStudent);
+route.post("/forgot-passwordStudent", forgotPassValStudent, forgotPasswordStudent);
+route.put("/reset-passwordStudent/:id/:token", changePassValStudent, resetPasswordStudent);
+route.put('/updateStudent/:id', validateUpdateStudent, updateSchoolStudent);
 route.delete('/deleteStudent/:id', deleteSchoolStudent);
 route.get('/readAllStudent', readAllStudent);
 route.get('/readOneStudent/:studentId', readOneStudent);

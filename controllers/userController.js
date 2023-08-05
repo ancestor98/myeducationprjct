@@ -6,6 +6,10 @@ const fs = require('fs');
 const cloudinary = require('../utilities/cloudinary');
 const { genToken, decodeToken } = require('../utilities/jwt');
 const emailSender = require('../middlewares/email');
+const { genEmailReg } = require('../utilities/schoolEmail/register');
+const {forgetPassEmail} = require("../utilities/schoolEmail/forgetpassword")
+const {genTeacherEmail} = require("../utilities/schoolEmail/teacherReg")
+
 
 
 // Register a School
@@ -60,11 +64,11 @@ const register = async (req, res)=>{
                 // await fs.unlinkSync(req.file.path);
                 const subject = 'ProgressPal - Kindly Verify your School Registration'
                 const link = `${req.protocol}://${req.get('host')}/progressPal/verify/${savedUser._id}/${token}`
-                const message = `Welcome to ProgressPal, we are pleased to work with your School: ${schoolName} to better the education system of Nigeria. Kindly use this link: ${link} to verify your school account. Kindly note that this link will expire after 5(five) Minutes.`
+                const html = await genEmailReg(link)
                 emailSender({
                     email: schoolEmail,
                     subject,
-                    message
+                    html
                 })
                 if (!savedUser) {
                     res.status(400).json({
@@ -136,11 +140,11 @@ const resendEmailVerification = async (req, res)=>{
                 const token = await genToken(user._id, '3m')
                 const subject = 'ProgressPal - Kindly Verify your School Registration'
                 const link = `${req.protocol}://${req.get('host')}/progressPal/verify/${user._id}/${token}`
-                const message = `Welcome to ProgressPal, we are pleased to work with your School: ${user.schoolName} to better the education system of Nigeria. Kindly use this link: ${link} to verify your school account. Kindly note that this link will expire after 5(five) Minutes.`
+                const html = await genEmailReg(link)
                 emailSender({
                     email: user.schoolEmail,
                     subject,
-                    message
+                    html
                 })
                 res.status(201).json({
                     message: `${user.schoolName} has been successfully registered. Check your School Email to verify your account.`,
@@ -171,11 +175,11 @@ const logIn = async(req, res)=>{
                 const token = await genToken(user._id, '3m')
                 const subject = 'ProgressPal - Kindly Verify your School Registration'
                 const link = `${req.protocol}://${req.get('host')}/progressPal/verify/${user._id}/${token}`
-                const message = `Welcome to ProgressPal, we are pleased to work with your School: ${user.schoolName} to better the education system of Nigeria. Kindly use this link: ${link} to verify your school account. Kindly note that this link will expire after 5(five) Minutes.`
+                const html = await genEmailReg(link)
                 emailSender({
                     email: user.schoolEmail,
                     subject,
-                    message
+                    html
                 })
                 res.status(400).json({
                     message: `School: ${user.schoolName} not verified, Please, check your email for link to verify your account`
@@ -243,11 +247,11 @@ const forgotPassword = async (req, res)=>{
             const token = await genToken(isEmail._id, '3m')
             const subject = 'ProgressPal - Link for Reset password'
             const link = `${req.protocol}://${req.get('host')}/progressPal/reset-password/${isEmail._id}/${token}`
-            const message = `Forgot your Password? it's okay, kindly use this link ${link} to re-set your account password. Please note that this link will expire after 5(five) Minutes.`
+            const html = await forgetPassEmail(link)
             emailSender({
                 email: schoolEmail,
                 subject,
-                message
+                html
             });
             res.status(200).json({
                 message: 'Email sent successfully, please check your Email for the link to reset your Password'
@@ -294,15 +298,14 @@ const teacherLink = async (req, res)=>{
     try {
         const { teacherEmail } = req.body;
         const { id } = req.params;
-        const school = await userModel.findById(id);
         const token = await genToken(id, '30m');
         const subject = 'ProgressPal - Teacher Registration'
         const link = `${req.protocol}://${req.get('host')}/progressPal/newTeacher/${id}/${token}`
-        const message = `Welcome to ProgressPal, you are now a teacher with ${school.schoolName},. Kindly follow the link: ${link} below to finalize your registration on ProgressPal. Please note that this link will expire after 5(five) Minutes.`
+        const html = await genTeacherEmail(link, id)
         emailSender({
             email: teacherEmail,
             subject,
-            message
+            html
         })
         res.status(200).json({
             message: `Link for registration successfully sent to ${teacherEmail}`
@@ -362,9 +365,7 @@ const updateSchool = async (req, res)=>{
                 const public_id = user.schoolLogo.split('/').pop().split('.')[0];
                 await cloudinary.uploader.destroy(public_id);
                 const newLogo = await cloudinary.uploader.upload(userLogo)
-                console.log(newLogo.secure_url)
                 data.schoolLogo = newLogo.secure_url
-                // await fs.unlinkSync(req.file.path);
                 const updatedSchoolwithLogo = await userModel.findByIdAndUpdate(id, data, {new: true});
                 if (!updatedSchoolwithLogo) {
                     res.status(400).json({

@@ -1,4 +1,3 @@
-const { string } = require('@hapi/joi');
 const mongoose = require('mongoose');
 
 const userSchema = new mongoose.Schema({
@@ -27,7 +26,7 @@ const userSchema = new mongoose.Schema({
     },
     regNo: {
         type: String,
-        required: [true, 'School name is Required']
+        required: [true, 'School Registration Numer is Required']
     },
     password: {
         type: String,
