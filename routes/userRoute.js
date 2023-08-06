@@ -129,7 +129,7 @@ route.get('/readOneStudent/:studentId', readOneStudent);
 // Route for results Alone.
 route.post('/addResult/:studentId', createResult);
 route.get('/studentResult/:studentId', studentAllResult);
-route.get('/allResults/', allResults);
+route.get('/allResults', allResults);
 route.get('/oneResult/:resultId', oneResult);
 route.put('/updateResult/:resultId', updateResult)
 route.delete('/deleteResult/:studentId/:resultId', deleteResult)

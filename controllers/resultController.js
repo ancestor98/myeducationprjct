@@ -61,7 +61,7 @@ const studentAllResult = async (req, res)=>{
     try {
         const { studentId } = req.params;
         const student = await studentModel.findById(studentId).populate('link').populate('results');
-        console.log(student.results);
+        // console.log(student.results);
         if (!student) {
             res.status(404).json({
                 message: 'Student not found'
@@ -180,7 +180,8 @@ const deleteResult = async (req, res)=>{
         const { resultId } = req.params;
         const { studentId } = req.params;
         const result = await resultModel.findById(resultId);
-        const student = await studentModel.findById(studentId).populate(results);
+        const student = await studentModel.findById(studentId).populate('results');
+        // console.log(student.results);
         if (!result) {
             res.status(404).json({
                 message: 'Result not found'

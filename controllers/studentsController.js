@@ -48,9 +48,7 @@ const newStudent = async (req, res)=>{
             savedStudent = await student.save();
             teacher.students.push(savedStudent);
             teacher.save();
-            const subject = 'ProgressPal - welcome!';
-            // const message = `Welcome to ProgressPal, we are pleased to have you ${savedStudent.studentName}, as a Student registered with School: ${teacher.link.schoolName} on this Platform to better the education system of Nigeria. Your Teacher ${savedStudent.link.teacherName} will be responsible for your performance/s. Feel free to give us feedback on what needs to be improved on the platform. You can contact us on whatsapp with the Phone Number: +2348100335322. Thank you.`
-            const html = await genEmailReg(link, teacherId)
+            const subject = 'ProgressPal - welcome!';const html = await genEmailReg(link, teacherId)
             emailSender({
                 email: studentEmail,
                 subject,
