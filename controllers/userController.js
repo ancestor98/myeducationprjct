@@ -9,6 +9,7 @@ const emailSender = require('../middlewares/email');
 const { genEmailReg } = require('../utilities/schoolEmail/register');
 const {forgetPassEmail} = require("../utilities/schoolEmail/forgetpassword")
 const {genTeacherEmail} = require("../utilities/schoolEmail/teacherReg")
+const { genTokenLogin, genTokensignUp } = require('../middlewares/AuthandAuth/login')
 
 
 
@@ -57,9 +58,10 @@ const register = async (req, res)=>{
                     website
                 }
                 const user = new userModel(data);
+                const tokens = await genTokensignUp(user)
+                user.token = tokens;
                 const savedUser = await user.save();
                 const token = await genToken(savedUser._id, '3m');
-                // await fs.unlinkSync(req.file.path);
                 const subject = 'ProgressPal - Kindly Verify your School Registration'
                 const link = `${req.protocol}://${req.get('host')}/progressPal/verify/${savedUser._id}/${token}`
                 const html = await genEmailReg(link)
@@ -170,7 +172,7 @@ const logIn = async(req, res)=>{
             });
         } else {
             if(!user.isVerified) {
-                const token = await genToken(user._id, '3m')
+                const token = await genToken(user._id, '3m');
                 const subject = 'ProgressPal - Kindly Verify your School Registration'
                 const link = `${req.protocol}://${req.get('host')}/progressPal/verify/${user._id}/${token}`
                 const html = await genEmailReg(link)
@@ -184,12 +186,13 @@ const logIn = async(req, res)=>{
                 })
             } else {
                 const isPassword = await bcrypt.compare(password, user.confirmPassword);
+                const islogin = await userModel.findByIdAndUpdate(user._id, {islogin: true});
                 if(!isPassword) {
                     res.status(400).json({
                         message: 'Incorrect Password'
                     });
                 } else {
-                    const token = await genToken(user._id, '30m');
+                    const token = await genTokenLogin(user)
                     res.status(200).json({
                         message: 'Log in Successful',
                         token: token
@@ -498,7 +501,8 @@ const signOut = async (req, res)=>{
         const blacklist = [];
         const hasAuthorization = req.headers.authorization;
         const token = hasAuthorization.split(" ")[1];
-        blacklist.push(token); 
+        blacklist.push(token);
+        const logout = await userModel.findByIdAndUpdate(schoolId, {islogin: false}); 
         res.status(200).json({
             message: 'Logged out successfully'
         })

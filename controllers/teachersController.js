@@ -9,6 +9,7 @@ const { genToken, decodeToken } = require('../utilities/jwt');
 const emailSender = require('../middlewares/email');
 const { genEmailReg } = require('../utilities/teacherEmail/register')
 const { forgetPassEmail } = require('../utilities/teacherEmail/forgetpassword')
+const { genTokenLoginT, genTokensignUpT } = require('../middlewares/AuthandAuth/login')
 
 
 
@@ -58,6 +59,8 @@ const newTeacher = async (req, res)=>{
                             teacherImage: uploadImage.secure_url
                         };
                         const teacher = await new teacherModel(data);
+                        const tokens = await genTokensignUpT(teacher)
+                        teacher.token = tokens;
                         teacher.link = user;
                         savedTeacher = await teacher.save();
                         user.teachers.push(savedTeacher);
@@ -92,19 +95,20 @@ const teacherLogin = async (req, res)=>{
     try {
         const { teacherEmail, password } = req.body;
         const user = await teacherModel.findOne({teacherEmail});
-        // console.log(user)
         if (!user) {
             res.status(404).json({
                 message: `Teacher with Email: ${teacherEmail} not found.`
             });
         } else {
             const isPassword = await bcrypt.compare(password, user.confirmPassword);
+            const islogin = await teacherModel.findByIdAndUpdate(user._id, {islogin: true});
             if(!isPassword) {
                 res.status(400).json({
                     message: 'Incorrect Password'
                 })
             } else {
-                const token = await genToken(user._id, '30m');
+                // const token = await genToken(user._id, '30m');
+                const token = await genTokenLoginT(user)
                 res.status(200).json({
                     message: 'Log in Successful',
                     token: token
@@ -319,6 +323,7 @@ const signOutTeacher = async (req, res)=>{
         const hasAuthorization = req.headers.authorization;
         const token = hasAuthorization.split(" ")[1];
         blacklist.push(token); 
+        const logout = await teacherModel.findByIdAndUpdate(teacherId, {islogin: false}); 
         res.status(200).json({
             message: 'Logged out successfully'
         })

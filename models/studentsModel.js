@@ -19,6 +19,13 @@ const studentSchema = new mongoose.Schema({
     studentPassport: {
         type: String
     },
+    token: {
+        type: String
+    },
+    islogin: {
+        type: Boolean,
+        default: false
+    },
     link: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'teachers'

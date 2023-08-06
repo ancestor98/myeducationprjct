@@ -22,6 +22,13 @@ const teacherSchema = new mongoose.Schema({
     confirmPassword: {
         type: String
     },
+    token: {
+        type: String
+    },
+    islogin: {
+        type: Boolean,
+        default: false
+    },
     link: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'UserInfo'

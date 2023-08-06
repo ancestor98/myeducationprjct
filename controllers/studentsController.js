@@ -11,6 +11,9 @@ const emailSender = require('../middlewares/email');
 const { forgetPassEmail } = require('../utilities/studentEmail/forgetpassword')
 const { genEmailReg } = require('../utilities/studentEmail/register')
 const { link } = require('@hapi/joi');
+const { genTokenLoginS, genTokensignUpS } = require('../middlewares/AuthandAuth/login')
+
+
 
 
 const newStudent = async (req, res)=>{
@@ -23,8 +26,8 @@ const newStudent = async (req, res)=>{
             password
         } = req.body;
         const { teacherId } = req.params;
+        console.log(teacherId);
         const teacher = await teacherModel.findById(teacherId).populate('link').populate('students');
-        // const studentPassport = req.file.path;
         const studentImage = req.files.studentPassport.tempFilePath
         const uploadImage = await cloudinary.uploader.upload(studentImage);
         const isEmail = await studentModel.findOne({studentEmail});
@@ -44,11 +47,15 @@ const newStudent = async (req, res)=>{
                 studentPassport: uploadImage.secure_url
             }
             const student = await new studentModel(data);
+            const tokens = await genTokensignUpS(student)
+            student.token = tokens;
             student.link = teacher;
             savedStudent = await student.save();
             teacher.students.push(savedStudent);
             teacher.save();
-            const subject = 'ProgressPal - welcome!';const html = await genEmailReg(link, teacherId)
+            const subject = 'ProgressPal - welcome!';
+            const link = `${req.protocol}://${req.get('host')}/progressPal`
+            const html = await genEmailReg(link, teacherId)
             emailSender({
                 email: studentEmail,
                 subject,
@@ -79,12 +86,14 @@ const studentLogin = async (req, res)=>{
             });
         } else {
             const isPassword = await bcrypt.compare(password, user.password);
+            const islogin = await studentModel.findByIdAndUpdate(user._id, {islogin: true});
             if(!isPassword) {
                 res.status(400).json({
                     message: 'Incorrect Password'
                 })
             } else {
-                const token = await genToken(user._id, '30m');
+                // const token = await genToken(user._id, '30m');
+                const token = await genTokenLoginS(user)
                 res.status(200).json({
                     message: 'Log in Successful',
                     token: token
@@ -290,6 +299,7 @@ const signOutStudent = async (req, res)=>{
         const hasAuthorization = req.headers.authorization;
         const token = hasAuthorization.split(" ")[1];
         blacklist.push(token); 
+        const logout = await studentModel.findByIdAndUpdate(studentId, {islogin: false}); 
         res.status(200).json({
             message: 'Logged out successfully'
         })

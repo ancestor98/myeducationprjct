@@ -1,4 +1,22 @@
 const {
+    userAuthSchool,
+    isAdminAuthorizedSchool,
+    isSuperAdminAuthorizedSchool,
+    loginAuthSchool
+} = require('../middlewares/AuthandAuth/schoolAuthMiddleware')
+const {
+    userAuthTeacher,
+    isAdminAuthorizedTeacher,
+    isSuperAdminAuthorizedTeacher,
+    loginAuthTeacher
+} = require('../middlewares/AuthandAuth/teacherAuthMiddleware');
+const {
+    userAuthStudent,
+    isAdminAuthorizedStudent,
+    isSuperAdminAuthorizedStudent,
+    loginAuthStudent
+} = require('../middlewares/AuthandAuth/studentAuthMiddleware')
+const {
     validateUser,
     verifyEmailVal,
     loginVal,
@@ -87,7 +105,7 @@ route.post('/register', validateUser, register)
 route.put('/verify/:schoolId/:token', verifyEmail)
 route.put('/re-verify', verifyEmailVal, resendEmailVerification)
 route.post('/login', loginVal, logIn)
-route.post('/logout/:schoolId', signOut)
+route.post('/logout/:schoolId', loginAuthSchool, signOut)
 route.put("/changePassword/:schoolId", changePassVal, changePassword);
 route.post("/forgot-password", forgotPassVal, forgotPassword);
 route.put("/reset-password/:schoolId/:token", changePassVal, resetPassword);
@@ -102,7 +120,7 @@ route.get('/readOneSchool/:schoolId', readOneSchool);
 // route.post('/newTeacher/:id/:token', upload.single('teacherImage'), newTeacher)
 route.post('/newTeacher/:schoolId/:token', validateteacher, newTeacher)
 route.post('/loginTeacher', loginValTeacher, teacherLogin)
-route.post('/logoutTeacher/:teacherId', signOutTeacher)
+route.post('/logoutTeacher/:teacherId', loginAuthTeacher, signOutTeacher)
 route.put("/changePasswordTeacher/:teacherId", changePassValTeacher, changePasswordTeacher);
 route.post("/forgot-passwordTeacher", forgotPassValTeacher, forgotPasswordTeacher);
 route.put("/reset-passwordTeacher/:teacherId/:token", changePassValTeacher, resetPasswordTeacher);
@@ -116,7 +134,7 @@ route.get('/readOneTeacher/:teacherId', readOneTeacher);
 // Route for Students Alone.
 route.post('/newStudent/:teacherId', validateStudent, newStudent)
 route.post('/loginStudent', loginValStudent, studentLogin)
-route.post('/logoutStudent/:studentId', signOutStudent)
+route.post('/logoutStudent/:studentId', loginAuthStudent, signOutStudent)
 route.put("/changePasswordStudent/:studentId", changePassValStudent, changePasswordStudent);
 route.post("/forgot-passwordStudent", forgotPassValStudent, forgotPasswordStudent);
 route.put("/reset-passwordStudent/:studentId/:token", changePassValStudent, resetPasswordStudent);

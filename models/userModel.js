@@ -51,6 +51,13 @@ const userSchema = new mongoose.Schema({
         type: Boolean,
         default: false
     },
+    token: {
+        type: String
+    },
+    islogin: {
+        type: Boolean,
+        default: false
+    },
     teachers: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'teachers'
