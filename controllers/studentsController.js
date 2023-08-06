@@ -22,8 +22,8 @@ const newStudent = async (req, res)=>{
             studentEmail,
             password
         } = req.body;
-        const { id } = req.params;
-        const teacher = await teacherModel.findById(id).populate('link').populate('students');
+        const { teacherId } = req.params;
+        const teacher = await teacherModel.findById(teacherId).populate('link').populate('students');
         // const studentPassport = req.file.path;
         const studentImage = req.files.studentPassport.tempFilePath
         const uploadImage = await cloudinary.uploader.upload(studentImage);
@@ -50,7 +50,7 @@ const newStudent = async (req, res)=>{
             teacher.save();
             const subject = 'ProgressPal - welcome!';
             // const message = `Welcome to ProgressPal, we are pleased to have you ${savedStudent.studentName}, as a Student registered with School: ${teacher.link.schoolName} on this Platform to better the education system of Nigeria. Your Teacher ${savedStudent.link.teacherName} will be responsible for your performance/s. Feel free to give us feedback on what needs to be improved on the platform. You can contact us on whatsapp with the Phone Number: +2348100335322. Thank you.`
-            const html = await genEmailReg(link, id)
+            const html = await genEmailReg(link, teacherId)
             emailSender({
                 email: studentEmail,
                 subject,
@@ -105,8 +105,8 @@ const studentLogin = async (req, res)=>{
 const changePasswordStudent = async (req, res) => {
     try {
         const { password } = req.body;
-        const { id } = req.params;
-        const userPassword = await studentModel.findById(id);
+        const { studentId } = req.params;
+        const userPassword = await studentModel.findById(studentId);
         const salt = bcrypt.genSaltSync(10);
         const hash = bcrypt.hashSync(password, salt);
         const newPassword = await studentModel.findByIdAndUpdate(userPassword, {password: hash}, {new: true});
@@ -164,11 +164,11 @@ const forgotPasswordStudent = async (req, res)=>{
 const resetPasswordStudent = async (req, res)=>{
     try {
         const { token } = req.params;
-        const { id } = req.params;
+        const { studentId } = req.params;
         const { password } = req.body;
         const salt = bcrypt.genSaltSync(10);
         const hash = bcrypt.hashSync(password, salt);
-        const user = await studentModel.findByIdAndUpdate(id, { password: hash }, { new: true });
+        const user = await studentModel.findByIdAndUpdate(studentId, { password: hash }, { new: true });
         if (!user) {
             res.status(400).json({
                 message: 'Could not Reset Password'
@@ -197,8 +197,8 @@ const updateSchoolStudent = async (req, res)=>{
         } = req.body;
         // const userLogo = req.file.path;
         const userLogo = req.files.studentPassport.tempFilePath;
-        const { id } = req.params;
-        const user = await studentModel.findById(id);
+        const { studentId } = req.params;
+        const user = await studentModel.findById(studentId);
         if(!user) {
             res.status(404).json({
                 message: 'Teacher not Found'
@@ -219,7 +219,7 @@ const updateSchoolStudent = async (req, res)=>{
                 await cloudinary.uploader.destroy(public_id);
                 const newImage = await cloudinary.uploader.upload(userLogo)
                 data.studentPassport = newImage.secure_url
-                const updatedTeacherwithImage = await studentModel.findByIdAndUpdate(id, data, {new: true});
+                const updatedTeacherwithImage = await studentModel.findByIdAndUpdate(studentId, data, {new: true});
                 if (!updatedTeacherwithImage) {
                     res.status(400).json({
                         message: 'Could not update student Info with Image'
@@ -231,7 +231,7 @@ const updateSchoolStudent = async (req, res)=>{
                     })
                 }
             } else {
-                const updatedTeacher = await studentModel.findByIdAndUpdate(id, data, {new: true});
+                const updatedTeacher = await studentModel.findByIdAndUpdate(studentId, data, {new: true});
                 if (!updatedTeacher) {
                     res.status(400).json({
                         message: 'Could not update student Info with Image'
@@ -255,8 +255,8 @@ const updateSchoolStudent = async (req, res)=>{
 // Delete Teacher
 const deleteSchoolStudent = async (req, res)=>{
     try {
-        const { id } = req.params;
-        const user = await studentModel.findById(id);
+        const { studentId } = req.params;
+        const user = await studentModel.findById(studentId);
         if(!user) {
             res.status(404).json({
                 message: 'User not Found'
@@ -264,7 +264,7 @@ const deleteSchoolStudent = async (req, res)=>{
         } else {
             const public_id = user.studentPassport.split('/').pop().split('.')[0];
             await cloudinary.uploader.destroy(public_id);
-            const deletedTeacher = await studentModel.findByIdAndDelete(id);
+            const deletedTeacher = await studentModel.findByIdAndDelete(studentId);
             if (!deletedTeacher) {
                 res.status(400).json({
                     message: 'Error deleting student Info, Try Again.'
@@ -287,7 +287,7 @@ const deleteSchoolStudent = async (req, res)=>{
 // Sign Out
 const signOutStudent = async (req, res)=>{
     try {
-        const { id } = req.params;
+        const { studentId } = req.params;
         const blacklist = [];
         const hasAuthorization = req.headers.authorization;
         const token = hasAuthorization.split(" ")[1];

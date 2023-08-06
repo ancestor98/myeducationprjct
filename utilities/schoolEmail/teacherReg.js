@@ -1,8 +1,9 @@
 const userModel = require('../../models/userModel')
 
 // This function generates the email template with a dynamic link
-async function genTeacherEmail(link, id) {
-    const school = await userModel.findById(id);
+async function genTeacherEmail(link, schoolId) {
+  // console.log(schoolId)
+    const school = await userModel.findById(schoolId);
     return `
     <!DOCTYPE html>
   <html lang="en">

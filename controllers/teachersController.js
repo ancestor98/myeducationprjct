@@ -16,12 +16,12 @@ const { forgetPassEmail } = require('../utilities/teacherEmail/forgetpassword')
 const newTeacher = async (req, res)=>{
     try {
         const { token } = req.params;
-        const { id } = req.params;
+        const { schoolId } = req.params;
         await jwt.verify(token, process.env.JWT_SECRET, async (err)=>{
             if(err) {
                 res.json('This link is Expired. Please, Inform your School Administrator to send you another registration Link.')
             } else {
-                const user = await userModel.findById(id);
+                const user = await userModel.findById(schoolId);
                 const {
                     teacherName,
                     teacherClass,
@@ -123,8 +123,8 @@ const teacherLogin = async (req, res)=>{
 const changePasswordTeacher = async (req, res) => {
     try {
         const { password } = req.body;
-        const { id } = req.params;
-        const userPassword = await teacherModel.findById(id);
+        const { teacherId } = req.params;
+        const userPassword = await teacherModel.findById(teacherId);
         const salt = bcrypt.genSaltSync(10);
         const hash = bcrypt.hashSync(password, salt);
         const newPassword = await teacherModel.findByIdAndUpdate(userPassword, {password: hash}, {new: true});
@@ -184,14 +184,14 @@ const forgotPasswordTeacher = async (req, res)=>{
 const resetPasswordTeacher = async (req, res)=>{
     try {
         const { token } = req.params;
-        const { id } = req.params;
+        const { teacherId } = req.params;
         const { password } = req.body;
         const salt = bcrypt.genSaltSync(10);
         const hash = bcrypt.hashSync(password, salt);
         const userInfo = await decodeToken(token);
         // console.log(userInfo);
-        const user = await teacherModel.findByIdAndUpdate(id, { password: hash }, { new: true });
-        const userConfirm = await teacherModel.findByIdAndUpdate(id, { confirmPassword: hash }, { new: true });
+        const user = await teacherModel.findByIdAndUpdate(teacherId, { password: hash }, { new: true });
+        const userConfirm = await teacherModel.findByIdAndUpdate(teacherId, { confirmPassword: hash }, { new: true });
         if (!user) {
             res.status(400).json({
                 message: 'Could not Reset Password'
@@ -220,8 +220,8 @@ const updateSchoolTeacher = async (req, res)=>{
         } = req.body;
         // const userLogo = req.file.path;
         const userLogo = req.files.teacherImage.tempFilePath;
-        const { id } = req.params;
-        const user = await teacherModel.findById(id);
+        const { teacherId } = req.params;
+        const user = await teacherModel.findById(teacherId);
         if(!user) {
             res.status(404).json({
                 message: 'Teacher not Found'
@@ -243,7 +243,7 @@ const updateSchoolTeacher = async (req, res)=>{
                 await cloudinary.uploader.destroy(public_id);
                 const newImage = await cloudinary.uploader.upload(userLogo)
                 data.teacherImage = newImage.secure_url
-                const updatedTeacherwithImage = await teacherModel.findByIdAndUpdate(id, data, {new: true});
+                const updatedTeacherwithImage = await teacherModel.findByIdAndUpdate(teacherId, data, {new: true});
                 if (!updatedTeacherwithImage) {
                     res.status(400).json({
                         message: 'Could not update Teacher Info with Image'
@@ -255,7 +255,7 @@ const updateSchoolTeacher = async (req, res)=>{
                     })
                 }
             } else {
-                const updatedTeacher = await teacherModel.findByIdAndUpdate(id, data, {new: true});
+                const updatedTeacher = await teacherModel.findByIdAndUpdate(teacherId, data, {new: true});
                 if (!updatedTeacher) {
                     res.status(400).json({
                         message: 'Could not update Teacher Info with Image'
@@ -280,8 +280,8 @@ const updateSchoolTeacher = async (req, res)=>{
 // Delete Teacher
 const deleteSchoolTeacher = async (req, res)=>{
     try {
-        const { id } = req.params;
-        const user = await teacherModel.findById(id);
+        const { teacherId } = req.params;
+        const user = await teacherModel.findById(teacherId);
         if(!user) {
             res.status(404).json({
                 message: 'User not Found'
@@ -289,7 +289,7 @@ const deleteSchoolTeacher = async (req, res)=>{
         } else {
             const public_id = user.teacherImage.split('/').pop().split('.')[0];
             await cloudinary.uploader.destroy(public_id);
-            const deletedTeacher = await teacherModel.findByIdAndDelete(id);
+            const deletedTeacher = await teacherModel.findByIdAndDelete(teacherId);
             if (!deletedTeacher) {
                 res.status(400).json({
                     message: 'Error deleting School, Try Again.'
@@ -314,7 +314,7 @@ const deleteSchoolTeacher = async (req, res)=>{
 // Sign Out
 const signOutTeacher = async (req, res)=>{
     try {
-        const { id } = req.params;
+        const { teacherId } = req.params;
         const blacklist = [];
         const hasAuthorization = req.headers.authorization;
         const token = hasAuthorization.split(" ")[1];

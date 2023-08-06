@@ -67,7 +67,12 @@ const {
 
 //  RESULTS
 const {
-    createResult
+    createResult,
+    studentAllResult,
+    allResults,
+    oneResult,
+    updateResult,
+    deleteResult
 } = require('../controllers/resultController');
 const upload = require('../utilities/multer');
 
@@ -79,49 +84,55 @@ const route = express.Router();
 // route.post('/register', upload.single('schoolLogo'), validateUser, register)
 // route.post('/register', validateUser, register)
 route.post('/register', validateUser, register)
-route.put('/verify/:id/:token', verifyEmail)
+route.put('/verify/:schoolId/:token', verifyEmail)
 route.put('/re-verify', verifyEmailVal, resendEmailVerification)
 route.post('/login', loginVal, logIn)
-route.post('/logout/:id', signOut)
-route.put("/changePassword/:id", changePassVal, changePassword);
+route.post('/logout/:schoolId', signOut)
+route.put("/changePassword/:schoolId", changePassVal, changePassword);
 route.post("/forgot-password", forgotPassVal, forgotPassword);
-route.put("/reset-password/:id/:token", changePassVal, resetPassword);
-route.put('/updateSchool/:id', validateUpdateUser, updateSchool)
-route.delete('/deleteSchool/:id', deleteSchool)
-route.post('/teacherLink/:id', teacherEmailVal, teacherLink)
+route.put("/reset-password/:schoolId/:token", changePassVal, resetPassword);
+route.put('/updateSchool/:schoolId', validateUpdateUser, updateSchool)
+route.delete('/deleteSchool/:schoolId', deleteSchool)
+route.post('/teacherLink/:schoolId', teacherEmailVal, teacherLink)
 route.get('/readAllSchools', readAllSchools);
 route.get('/readOneSchool/:schoolId', readOneSchool);
 
 
 // Route for Teachers Alone.
 // route.post('/newTeacher/:id/:token', upload.single('teacherImage'), newTeacher)
-route.post('/newTeacher/:id/:token', validateteacher, newTeacher)
+route.post('/newTeacher/:schoolId/:token', validateteacher, newTeacher)
 route.post('/loginTeacher', loginValTeacher, teacherLogin)
-route.post('/logoutTeacher/:id', signOutTeacher)
-route.put("/changePasswordTeacher/:id", changePassValTeacher, changePasswordTeacher);
+route.post('/logoutTeacher/:teacherId', signOutTeacher)
+route.put("/changePasswordTeacher/:teacherId", changePassValTeacher, changePasswordTeacher);
 route.post("/forgot-passwordTeacher", forgotPassValTeacher, forgotPasswordTeacher);
-route.put("/reset-passwordTeacher/:id/:token", changePassValTeacher, resetPasswordTeacher);
-route.put('/updateTeacher/:id', validateUpdateteacher, updateSchoolTeacher)
-route.delete('/deleteTeacher/:id', deleteSchoolTeacher)
+route.put("/reset-passwordTeacher/:teacherId/:token", changePassValTeacher, resetPasswordTeacher);
+route.put('/updateTeacher/:teacherId', validateUpdateteacher, updateSchoolTeacher)
+route.delete('/deleteTeacher/:teacherId', deleteSchoolTeacher)
 route.get('/readAllTeachers', readAllTeachers);
 route.get('/readOneTeacher/:teacherId', readOneTeacher);
 
 
 
 // Route for Students Alone.
-route.post('/newStudent/:id', validateStudent, newStudent)
+route.post('/newStudent/:teacherId', validateStudent, newStudent)
 route.post('/loginStudent', loginValStudent, studentLogin)
-route.post('/logoutStudent/:id', signOutStudent)
-route.put("/changePasswordStudent/:id", changePassValStudent, changePasswordStudent);
+route.post('/logoutStudent/:studentId', signOutStudent)
+route.put("/changePasswordStudent/:studentId", changePassValStudent, changePasswordStudent);
 route.post("/forgot-passwordStudent", forgotPassValStudent, forgotPasswordStudent);
-route.put("/reset-passwordStudent/:id/:token", changePassValStudent, resetPasswordStudent);
-route.put('/updateStudent/:id', validateUpdateStudent, updateSchoolStudent);
-route.delete('/deleteStudent/:id', deleteSchoolStudent);
+route.put("/reset-passwordStudent/:studentId/:token", changePassValStudent, resetPasswordStudent);
+route.put('/updateStudent/:studentId', validateUpdateStudent, updateSchoolStudent);
+route.delete('/deleteStudent/:studentId', deleteSchoolStudent);
 route.get('/readAllStudent', readAllStudent);
 route.get('/readOneStudent/:studentId', readOneStudent);
 
 
 // Route for results Alone.
 route.post('/addResult/:studentId', createResult);
+route.get('/studentResult/:studentId', studentAllResult);
+route.get('/allResults/', allResults);
+route.get('/oneResult/:resultId', oneResult);
+route.put('/updateResult/:resultId', updateResult)
+route.delete('/deleteResult/:studentId/:resultId', deleteResult)
+
 
 module.exports = { route };
