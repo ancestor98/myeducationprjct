@@ -60,34 +60,35 @@ DATA NEEDED FOR STUDENT REGISTRATION
 
 ONBOARDING FOR SCHOOLS:
 Registration: https://progresspal-8rxj.onrender.com/progressPal/register                                // Post Method  DONE
-Verify Email: https://progresspal-8rxj.onrender.com/progressPal/verify/:id/:token                       // Put Method   
+Verify Email: https://progresspal-8rxj.onrender.com/progressPal/verify/:schoolId/:token                       // Put Method   
 Re-send Email Verification: https://progresspal-8rxj.onrender.com/progressPal/re-verify                 // Put Method
 Login: https://progresspal-8rxj.onrender.com/progressPal/login                                          // Post Method  DONE
-signOut: https://progresspal-8rxj.onrender.com/progressPal/logout/:id                                   // Post Method
-Change Password: https://progresspal-8rxj.onrender.com/progressPal/changePassword/:id                   // Put Method
+signOut: https://progresspal-8rxj.onrender.com/progressPal/logout/:schoolId                                   // Post Method
+Change Password: https://progresspal-8rxj.onrender.com/progressPal/changePassword/:schoolId                   // Put Method
 Forgot Password: https://progresspal-8rxj.onrender.com/progressPal/forgot-password                      // Post Method
-Reset Password: https://progresspal-8rxj.onrender.com/progressPal/reset-password/:id/:token             // Put Method
-Teacher Link: https://progresspal-8rxj.onrender.com/progressPal/teacherLink/:id                         // Post Method
+Reset Password: https://progresspal-8rxj.onrender.com/progressPal/reset-password/:schoolId/:token             // Put Method
+Teacher Link: https://progresspal-8rxj.onrender.com/progressPal/teacherLink/:schoolId                         // Post Method
 
 At this point of registration for teachers: The school's ID and TOKEN should be caught dynamically from the route, at the submit button.
 
 ONBOARDING FOR TEACHERS:
-Registration: https://progresspal-8rxj.onrender.com/progressPal/newTeacher/:id/:token                       // Post Method
+Registration: https://progresspal-8rxj.onrender.com/progressPal/newTeacher/:schoolId/:token                       // Post Method
+// token parse from email to params.
 Login: https://progresspal-8rxj.onrender.com/progressPal/loginTeacher                                       // Post Method
-signOut: https://progresspal-8rxj.onrender.com/progressPal/logoutTeacher/:id                                // Post Method
-Change Password: https://progresspal-8rxj.onrender.com/progressPal/changePasswordTeacher/:id                // Put Method
+signOut: https://progresspal-8rxj.onrender.com/progressPal/logoutTeacher/:teacherId                                // Post Method
+Change Password: https://progresspal-8rxj.onrender.com/progressPal/changePasswordTeacher/:teacherId                // Put Method
 Forgot Password: https://progresspal-8rxj.onrender.com/progressPal/forgot-passwordTeacher                   // Post Method
-Reset Password: https://progresspal-8rxj.onrender.com/progressPal/reset-passwordTeacher/:id/:token          // Put Method
+Reset Password: https://progresspal-8rxj.onrender.com/progressPal/reset-passwordTeacher/:teacherId/:token          // Put Method
 
 
 
 ONBOARDING FOR STUDENTS:
-Registration: https://progresspal-8rxj.onrender.com/progressPal/newStudent/:id                              // Post Method
+Registration: https://progresspal-8rxj.onrender.com/progressPal/newStudent/:teacherId                              // Post Method
 Login: https://progresspal-8rxj.onrender.com/progressPal/loginStudent                                       // Post Method
-signOut: https://progresspal-8rxj.onrender.com/progressPal/logoutStudent/:id                                // Post Method
-Change Password: https://progresspal-8rxj.onrender.com/progressPal/changePasswordStudent/:id                // Put Method
+signOut: https://progresspal-8rxj.onrender.com/progressPal/logoutStudent/:studentId                                // Post Method
+Change Password: https://progresspal-8rxj.onrender.com/progressPal/changePasswordStudent/:studentId                // Put Method
 Forgot Password: https://progresspal-8rxj.onrender.com/progressPal/forgot-passwordStudent                   // Post Method
-Reset Password: https://progresspal-8rxj.onrender.com/progressPal/reset-passwordStudent/:id/:token          // Put Method
+Reset Password: https://progresspal-8rxj.onrender.com/progressPal/reset-passwordStudent/:studentId/:token          // Put Method
 
 
 
@@ -108,19 +109,19 @@ Delete a School: https://progresspal-8rxj.onrender.com/progressPal/deleteSchool/
 At this point of registration for teachers: The school's ID and TOKEN should be caught dynamically from the route, at the submit button.
 
 CRUD FOR TEACHERS
-CREATE - Registration: https://progresspal-8rxj.onrender.com/progressPal/newTeacher/:id/:token          // Post Method
+CREATE - Registration: https://progresspal-8rxj.onrender.com/progressPal/newTeacher/:schoolId/:token          // Post Method
 Read All Teachers: https://progresspal-8rxj.onrender.com/progressPal/readAllTeachers                    // Get Method
 Read One Teachers: https://progresspal-8rxj.onrender.com/progressPal/readOneTeacher/:teacherId          // Get Method
-Update a Teachers: https://progresspal-8rxj.onrender.com/progressPal/updateTeacher/:id                  // Put Method
-Delete a Teachers: https://progresspal-8rxj.onrender.com/progressPal/deleteTeacher/:id                 // Delete Method
+Update a Teachers: https://progresspal-8rxj.onrender.com/progressPal/updateTeacher/:teacherId                  // Put Method
+Delete a Teachers: https://progresspal-8rxj.onrender.com/progressPal/deleteTeacher/:teacherId                 // Delete Method
 
 
 CRUD FOR STUDENTS
-CREATE - Registration: https://progresspal-8rxj.onrender.com/progressPal/newStudent/:id                 // Post Method
+CREATE - Registration: https://progresspal-8rxj.onrender.com/progressPal/newStudent/:teacherId                 // Post Method
 Read All Students: https://progresspal-8rxj.onrender.com/progressPal/readAllStudent                     // Get Method
 Read One Students: https://progresspal-8rxj.onrender.com/progressPal/readOneStudent/:studentId          // Get Method
-Update a Students: https://progresspal-8rxj.onrender.com/progressPal/updateStudent/:id                  // Put Method
-Delete a Students: https://progresspal-8rxj.onrender.com/progressPal/deleteStudent/:id                 // Delete Method
+Update a Students: https://progresspal-8rxj.onrender.com/progressPal/updateStudent/:studentId                  // Put Method
+Delete a Students: https://progresspal-8rxj.onrender.com/progressPal/deleteStudent/:studentId                 // Delete Method
 
 
 
