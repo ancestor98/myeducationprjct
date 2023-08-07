@@ -69,6 +69,7 @@ Forgot Password: https://progresspal-8rxj.onrender.com/progressPal/forgot-passwo
 Reset Password: https://progresspal-8rxj.onrender.com/progressPal/reset-password/:id/:token             // Put Method
 Teacher Link: https://progresspal-8rxj.onrender.com/progressPal/teacherLink/:id                         // Post Method
 
+At this point of registration for teachers: The school's ID and TOKEN should be caught dynamically from the route, at the submit button.
 
 ONBOARDING FOR TEACHERS:
 Registration: https://progresspal-8rxj.onrender.com/progressPal/newTeacher/:id/:token                       // Post Method
@@ -80,7 +81,7 @@ Reset Password: https://progresspal-8rxj.onrender.com/progressPal/reset-password
 
 
 
-ONBOARDING FOR TEACHERS:
+ONBOARDING FOR STUDENTS:
 Registration: https://progresspal-8rxj.onrender.com/progressPal/newStudent/:id                              // Post Method
 Login: https://progresspal-8rxj.onrender.com/progressPal/loginStudent                                       // Post Method
 signOut: https://progresspal-8rxj.onrender.com/progressPal/logoutStudent/:id                                // Post Method
@@ -104,6 +105,7 @@ Read One School: https://progresspal-8rxj.onrender.com/progressPal/readOneSchool
 Update a School: https://progresspal-8rxj.onrender.com/progressPal/updateSchool/:id                     // Put Method
 Delete a School: https://progresspal-8rxj.onrender.com/progressPal/deleteSchool/:id                    // Delete Method
 
+At this point of registration for teachers: The school's ID and TOKEN should be caught dynamically from the route, at the submit button.
 
 CRUD FOR TEACHERS
 CREATE - Registration: https://progresspal-8rxj.onrender.com/progressPal/newTeacher/:id/:token          // Post Method
