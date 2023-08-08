@@ -1,114 +1,148 @@
-const Joi = require('@hapi/joi');
-
+const teacherModel = require('../models/teachersModel')
 
 const validateteacher = async (req, res, next)=>{
-    const schema = await Joi.object({
-        teacherName: Joi.string().pattern(/^[a-zA-Z\s]{5,}$/).required().messages({
-            'string.pattern.base': 'Teacher Name must contain at least 5 characters with letters and spaces only.',
-            "string.base": "Please provide your name.",
-            "string.empty": "Please provide your name.",
-          }),
-        teacherEmail: Joi.string().pattern(/^[^\s@]+@[^\s@]+\.[^\s@]+$/).required().messages({
-            'string.pattern.base': 'Wrong Email format.',
-            "string.base": "Please provide your Email.",
-            "string.empty": "Please provide your Email.",
-          }),
-        teacherClass: Joi.string().pattern(/^[a-zA-Z\s\d]{5,}$/).required().messages({
-            'string.pattern.base': 'Teacher Class must contain at least 5 characters with letters and spaces only.',
-            "string.base": "Please provide your Class.",
-            "string.empty": "Please provide your Class.",
-          }),
-        teacherAge: Joi.string().required().pattern(/^[1-9][0-9]$/).messages({
-            'string.pattern.base': 'Teachers Age must take in only Two digits Numbers.',
-            "string.base": "Please provide your Age.",
-            "string.empty": "Please provide your Age.",
-          }),
-        password: Joi.string().required().pattern(/^[A-Za-z0-9]{6}$/).messages({
-            'string.pattern.base': 'Teacher Password must contain at least 6 characters with Capital or Small letters, or Number and spaces',
-            "string.base": "Please provide a Password.",
-            "string.empty": "Please provide a Password.",
-          }),
-        confirmPassword: Joi.string().messages({
-            "string.base": "Please confirm your Password.",
-            "string.empty": "Please confirm your Password.",
-        }),
-    })
-    const { error } = schema.validate(req.body);
-    if(error) {
-        const validateError = error.details.map((detail)=>detail.message);
-        // console.log(error)
-        res.status(409).json({
-            message: validateError
+    const {
+        teacherName,
+        teacherEmail,
+        teacherClass,
+        teacherAge,
+        password,
+        confirmPassword
+    } = req.body;
+
+    try {
+        const isEmail = await teacherModel.findOne({ teacherEmail });
+        if (isEmail) {
+            res.status(400).json({
+                message: `Teacher with email: ${teacherEmail}, already exists. Try to Log in.`
+            })
+        } else {
+            if (
+                !teacherName &&
+                !teacherEmail &&
+                !teacherClass &&
+                !teacherAge &&
+                !password &&
+                !confirmPassword
+            ) {
+                return res.status(400).json({message: "All fields are required."});
+            } else if (!teacherName) {
+                return res.status(400).json({message: "Teacher name is required."});
+            } else if (!teacherEmail) {
+                return res.status(400).json({message: "Teacher email is required."});
+            } else if (!teacherClass) {
+                return res.status(400).json({message: "Teacher class is required."});
+            } else if (!teacherAge) {
+                return res.status(400).json({message: "Teacher's age is required."});
+            } else if (!password) {
+                return res.status(400).json({message: "Password is required."});
+            } else if (!confirmPassword) {
+                return res.status(400).json({message: "Confirm password is required."});
+            } else if (teacherName.length < 4) {
+                return res.status(400).json({message: "Teacher name must have at least 4 characters."});
+            } else if (teacherEmail.length < 4) {
+                return res.status(400).json({message: "Teacher email must have at least 4 characters."});
+            } else if (teacherClass.length < 4) {
+                return res.status(400).json({message: "Teacher class must have at least 4 characters."});
+            } else if (teacherAge.length < 2) {
+                return res.status(400).json({message: "Teacher age have at least 2 characters."});
+            } else if (!/^[a-zA-Z0-9\s]+$/.test(teacherName)) {
+                return res.status(400).json({message: "Invalid format for Teacher name."});
+            } else if (!/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(teacherEmail)) {
+                return res.status(400).json({message: "Invalid email format."});
+            } else if (!/^[a-zA-Z\s\d]{5,}$/.test(teacherClass)) {
+                return res.status(400).json({message: "Invalid Teacher class, It must have more than 4 characters with letters and spaces only."});
+            } else if (!/^[1-9][0-9]$/.test(teacherAge)) {
+                return res.status(400).json({message: "Invalid Teacher age, It will only take in two digits."});
+            } else if (!/(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}/.test(password)) {
+                return res.status(400).json({message: "Password must have at least 8 characters, including one uppercase, one lowercase, and one digit."});
+            } else if (password !== confirmPassword) {
+                return res.status(400).json({message: "Passwords do not match."});
+            } else {
+                next();
+            }
+        }
+    } catch (error) {
+        res.status(500).json({
+            message: 'Internal server error.'
         })
-    } else {
-        next()
     }
-};
+}
+
+
 
 
 const loginValTeacher = async (req, res, next)=>{
-    const schema = await Joi.object({
-        teacherEmail: Joi.string().pattern(/^[^\s@]+@[^\s@]+\.[^\s@]+$/).required().messages({
-            'string.pattern.base': 'Wrong Email format.',
-            "string.base": "Please provide your Email.",
-            "string.empty": "Please provide your Email.",
-        }),
-        password: Joi.string().required().pattern(/^[A-Za-z0-9]{6}$/).messages({
-            'string.pattern.base': 'Teacher Password must contain at least 6 characters with Capital or Small letters, or Number and spaces',
-            "string.base": "Please provide a Password.",
-            "string.empty": "Please provide a Password.",
-        })
-    })
-    const { error } = schema.validate(req.body);
-    if(error) {
-        const validateError = error.details.map((detail)=>detail.message);
-        // console.log(error)
-        res.status(409).json({
-            message: validateError
-        })
+    const {
+        teacherEmail,
+        password
+    } = req.body;
+    if (
+        !teacherEmail &&
+        !password
+    ) {
+        return res.status(400).json({message: "All fields are required."});
+    } else if (!teacherEmail) {
+        return res.status(400).json({message: "Email is required."});
+    } else if (teacherEmail.length < 4) {
+        return res.status(400).json({message: "Teacher email must have at least 4 characters."});
+    } else if (!/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(teacherEmail)) {
+        return res.status(400).json({message: "Invalid email format."});
+    } else if (!password) {
+        return res.status(400).json({message: "Password is required."});
+    }  else if (password.length < 4) {
+        return res.status(400).json({message: "Password must have at least 4 characters."});
+    } else if (!/(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}/.test(password)) {
+        return res.status(400).json({message: "Password must have at least 8 characters, including one uppercase, one lowercase, and one digit."});
     } else {
-        next()
-    }
+        const isEmail = await teacherModel.findOne({ teacherEmail });
+        if (!isEmail) {
+            res.status(400).json({
+                message: `Teacher with email: ${teacherEmail}, doesn't exist. Do well to register with us. Try Again later.`
+            })
+        } else {
+            next();
+        };
+    };
 };
 
 
-const changePassValTeacher = async (req, res, next)=>{
-    const schema = await Joi.object({
-        password: Joi.string().required().pattern(/^[A-Za-z0-9]{6}$/).messages({
-            'string.pattern.base': 'School Password must contain at least 6 characters with Capital or Small letters, or Number and spaces',
-            "string.base": "Please provide a Password.",
-            "string.empty": "Please provide a Password.",
-        })
-    })
-    const { error } = schema.validate(req.body);
-    if(error) {
-        const validateError = error.details.map((detail)=>detail.message);
-        // console.log(error)
-        res.status(409).json({
-            message: validateError
-        })
+
+const changePassValTeacher = async (req, res, teacherId, next)=>{
+    const {
+        password
+    } = req.body;
+    if (!password) {
+        return res.status(400).json({message: "Password is required."});
+    } else if (password.length < 4) {
+        return res.status(400).json({message: "Password must have at least 4 characters."});
+    } else if (!/(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}/.test(password)) {
+        return res.status(400).json({message: "Password must have at least 8 characters, including one uppercase, one lowercase, and one digit."});
     } else {
-        next()
+        const isUser = await teacherModel.findById(teacherId);
+        if (!isUser) {
+            res.status(400).json({
+                message: `You are not a user on this Platform. Do well to register with us. Try Again later.`
+            })
+        } else {
+            next();
+        };
     }
-};
+}
+
 
 
 
 const forgotPassValTeacher = async (req, res, next)=>{
-    const schema = await Joi.object({
-        teacherEmail: Joi.string().pattern(/^[^\s@]+@[^\s@]+\.[^\s@]+$/).required().messages({
-            'string.pattern.base': 'Wrong Email format.',
-            "string.base": "Please provide your Email.",
-            "string.empty": "Please provide your Email.",
-        })
-    })
-    const { error } = schema.validate(req.body);
-    if(error) {
-        const validateError = error.details.map((detail)=>detail.message);
-        // console.log(error)
-        res.status(409).json({
-            message: validateError
-        })
+    const {
+        teacherEmail
+    } = req.body;
+    if (!teacherEmail) {
+        return res.status(400).json({message: "Teacher email is required."});
+    } else if (teacherEmail.length < 4) {
+        return res.status(400).json({message: "Teacher email must have at least 4 characters."});
+    } else if (!/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(teacherEmail)) {
+        return res.status(400).json({message: "Invalid email format."});
     } else {
         next()
     }
@@ -116,52 +150,6 @@ const forgotPassValTeacher = async (req, res, next)=>{
 
 
 
-
-
-
-const validateUpdateteacher = async (req, res, next)=>{
-    const schema = await Joi.object({
-        teacherName: Joi.string().pattern(/^[a-zA-Z\s]{5,}$/).messages({
-            'string.pattern.base': 'Teacher Name must contain at least 5 characters with letters and spaces only.',
-            "string.base": "Please provide your name.",
-            "string.empty": "Please provide your name.",
-          }),
-        teacherEmail: Joi.string().pattern(/^[^\s@]+@[^\s@]+\.[^\s@]+$/).messages({
-            'string.pattern.base': 'Wrong Email format.',
-            "string.base": "Please provide your Email.",
-            "string.empty": "Please provide your Email.",
-          }),
-        teacherClass: Joi.string().pattern(/^[a-zA-Z\s\d]{5,}$/).messages({
-            'string.pattern.base': 'Teacher Class must contain at least 5 characters with letters and spaces only.',
-            "string.base": "Please provide your Class.",
-            "string.empty": "Please provide your Class.",
-          }),
-        teacherAge: Joi.string().pattern(/^[1-9][0-9]$/).messages({
-            'string.pattern.base': 'Teachers Age must take in only Two digits Numbers.',
-            "string.base": "Please provide your Age.",
-            "string.empty": "Please provide your Age.",
-          }),
-        password: Joi.string().pattern(/^[A-Za-z0-9]{6}$/).messages({
-            'string.pattern.base': 'Teacher Password must contain at least 6 characters with Capital or Small letters, or Number and spaces',
-            "string.base": "Please provide a Password.",
-            "string.empty": "Please provide a Password.",
-          }),
-        confirmPassword: Joi.string().messages({
-            "string.base": "Please confirm your Password.",
-            "string.empty": "Please confirm your Password.",
-        }),
-    })
-    const { error } = schema.validate(req.body);
-    if(error) {
-        const validateError = error.details.map((detail)=>detail.message);
-        // console.log(error)
-        res.status(409).json({
-            message: validateError
-        })
-    } else {
-        next()
-    }
-};
 
 
 
@@ -170,6 +158,5 @@ module.exports = {
     validateteacher,
     loginValTeacher,
     changePassValTeacher,
-    forgotPassValTeacher,
-    validateUpdateteacher
+    forgotPassValTeacher
 };

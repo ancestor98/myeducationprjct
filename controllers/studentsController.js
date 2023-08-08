@@ -26,7 +26,6 @@ const newStudent = async (req, res)=>{
             password
         } = req.body;
         const { teacherId } = req.params;
-        console.log(teacherId);
         const teacher = await teacherModel.findById(teacherId).populate('link').populate('students');
         const studentImage = req.files.studentPassport.tempFilePath
         const uploadImage = await cloudinary.uploader.upload(studentImage);

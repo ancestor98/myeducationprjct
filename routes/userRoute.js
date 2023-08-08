@@ -1,3 +1,4 @@
+// Importing my AuthMiddlwares.
 const {
     userAuthSchool,
     isAdminAuthorizedSchool,
@@ -16,30 +17,32 @@ const {
     isSuperAdminAuthorizedStudent,
     loginAuthStudent
 } = require('../middlewares/AuthandAuth/studentAuthMiddleware')
+
+
+// Importing my Validators
 const {
-    validateUser,
+    validateInputsMiddleware,
     verifyEmailVal,
     loginVal,
     changePassVal,
     forgotPassVal,
-    teacherEmailVal,
-    validateUpdateUser
-} = require('../middlewares/userValidate');
+    teacherEmailVal
+} = require('../middlewares/userValidate')
 const {
     
     validateteacher,
     loginValTeacher,
     changePassValTeacher,
-    forgotPassValTeacher,
-    validateUpdateteacher
+    forgotPassValTeacher
 } = require('../middlewares/teacherValidate');
 const {
     validateStudent,
     loginValStudent,
-    changePassValStudent,
-    forgotPassValStudent,
-    validateUpdateStudent
+    changePassValStudent
 } = require('../middlewares/studentValidate')
+
+
+// Importing my Controllers
 const {
     register,
     verifyEmail,
@@ -99,9 +102,7 @@ const route = express.Router();
 
 
 // Route for Schools Admin Alone.
-// route.post('/register', upload.single('schoolLogo'), validateUser, register)
-// route.post('/register', validateUser, register)
-route.post('/register', validateUser, register)
+route.post('/register', validateInputsMiddleware, register)
 route.put('/verify/:schoolId/:token', verifyEmail)
 route.put('/re-verify', verifyEmailVal, resendEmailVerification)
 route.post('/login', loginVal, logIn)
@@ -109,7 +110,7 @@ route.post('/logout/:schoolId', loginAuthSchool, signOut)
 route.put("/changePassword/:schoolId", changePassVal, changePassword);
 route.post("/forgot-password", forgotPassVal, forgotPassword);
 route.put("/reset-password/:schoolId/:token", changePassVal, resetPassword);
-route.put('/updateSchool/:schoolId', validateUpdateUser, updateSchool)
+route.put('/updateSchool/:schoolId', updateSchool)
 route.delete('/deleteSchool/:schoolId', deleteSchool)
 route.post('/teacherLink/:schoolId', teacherEmailVal, teacherLink)
 route.get('/readAllSchools', readAllSchools);
@@ -117,14 +118,13 @@ route.get('/readOneSchool/:schoolId', readOneSchool);
 
 
 // Route for Teachers Alone.
-// route.post('/newTeacher/:id/:token', upload.single('teacherImage'), newTeacher)
 route.post('/newTeacher/:schoolId/:token', validateteacher, newTeacher)
 route.post('/loginTeacher', loginValTeacher, teacherLogin)
 route.post('/logoutTeacher/:teacherId', loginAuthTeacher, signOutTeacher)
 route.put("/changePasswordTeacher/:teacherId", changePassValTeacher, changePasswordTeacher);
 route.post("/forgot-passwordTeacher", forgotPassValTeacher, forgotPasswordTeacher);
 route.put("/reset-passwordTeacher/:teacherId/:token", changePassValTeacher, resetPasswordTeacher);
-route.put('/updateTeacher/:teacherId', validateUpdateteacher, updateSchoolTeacher)
+route.put('/updateTeacher/:teacherId', updateSchoolTeacher)
 route.delete('/deleteTeacher/:teacherId', deleteSchoolTeacher)
 route.get('/readAllTeachers', readAllTeachers);
 route.get('/readOneTeacher/:teacherId', readOneTeacher);
@@ -136,9 +136,9 @@ route.post('/newStudent/:teacherId', validateStudent, newStudent)
 route.post('/loginStudent', loginValStudent, studentLogin)
 route.post('/logoutStudent/:studentId', loginAuthStudent, signOutStudent)
 route.put("/changePasswordStudent/:studentId", changePassValStudent, changePasswordStudent);
-route.post("/forgot-passwordStudent", forgotPassValStudent, forgotPasswordStudent);
+route.post("/forgot-passwordStudent", forgotPasswordStudent);
 route.put("/reset-passwordStudent/:studentId/:token", changePassValStudent, resetPasswordStudent);
-route.put('/updateStudent/:studentId', validateUpdateStudent, updateSchoolStudent);
+route.put('/updateStudent/:studentId', updateSchoolStudent);
 route.delete('/deleteStudent/:studentId', deleteSchoolStudent);
 route.get('/readAllStudent', readAllStudent);
 route.get('/readOneStudent/:studentId', readOneStudent);

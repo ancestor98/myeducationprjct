@@ -1,167 +1,141 @@
-const Joi = require('@hapi/joi');
-
+const studentModel = require('../models/studentsModel');
 
 const validateStudent = async (req, res, next)=>{
-    const schema = await Joi.object({
-        studentName: Joi.string().pattern(/^[a-zA-Z\s]{5,}$/).required().messages({
-            'string.pattern.base': 'Student Name must contain at least 5 characters with letters and spaces only.',
-            "string.base": `Please provide the student's name.`,
-            "string.empty": `Please provide the student's name.`,
-          }),
-        studentEmail: Joi.string().pattern(/^[^\s@]+@[^\s@]+\.[^\s@]+$/).required().messages({
-            'string.pattern.base': 'Wrong Email format.',
-            "string.base": `Please provide the student's email.`,
-            "string.empty": `Please provide the student's email.`,
-          }),
-        studentClass: Joi.string().pattern(/^[a-zA-Z\s\d]{5,}$/).required().messages({
-            'string.pattern.base': 'Student Class must contain at least 5 characters with letters and spaces only.',
-            "string.base": `Please provide the student's class.`,
-            "string.empty": `Please provide the student's class.`,
-          }),
-        studentAge: Joi.string().required().pattern(/^[1-9][0-9]$/).messages({
-            'string.pattern.base': 'Students Age must take in only Two digits Numbers.',
-            "string.base": `Please provide the student's age.`,
-            "string.empty": `Please provide the student's age.`,
-          }),
-        password: Joi.string().required().pattern(/^[A-Za-z0-9]{6}$/).messages({
-            'string.pattern.base': 'Student Pin Number must contain at least 6 characters with Capital or Small letters, or Number and spaces',
-            "string.base": `Please provide the student's pin number/password.`,
-            "string.empty": `Please provide the student's pin Number/password.`,
-          }),
-        confirmPassword: Joi.string().messages({
-            "string.base": `Please confirm the student's pin number/password.`,
-            "string.empty": `Please confirm the student's pin number/password.`,
-        }),
-    })
-    const { error } = schema.validate(req.body);
-    if(error) {
-        const validateError = error.details.map((detail)=>detail.message);
-        // console.log(error)
-        res.status(409).json({
-            message: validateError
+    const {
+        studentName,
+        studentEmail,
+        studentClass,
+        studentAge,
+        password
+    } = req.body;
+    try {
+        const isEmail = await studentModel.findOne({ studentEmail });
+        if (isEmail) {
+            res.status(400).json({
+                message: `Student with email: ${studentEmail}, already exists.`
+            })
+        } else {
+            if (
+                !studentName &&
+                !studentEmail &&
+                !studentClass &&
+                !studentAge &&
+                !password 
+            ) { 
+                return res.status(400).json({message: "All fields are required."});
+            } else if (!studentName) {
+                return res.status(400).json({message: "Student name is required."});
+            } else if (!studentEmail) {
+                return res.status(400).json({message: "Student email is required."});
+            } else if (!studentClass) {
+                return res.status(400).json({message: "Student class is required."});
+            } else if (!studentAge) {
+                return res.status(400).json({message: "Student's age is required."});
+            } else if (!password) {
+                return res.status(400).json({message: "Password is required."});
+            } else if (studentName.length < 4) {
+                return res.status(400).json({message: "Student name must have at least 4 characters."});
+            } else if (studentEmail.length < 4) {
+                return res.status(400).json({message: "Student email must have at least 4 characters."});
+            } else if (studentClass.length < 4) {
+                return res.status(400).json({message: "Student class must have at least 4 characters."});
+            } else if (studentAge.length < 2) {
+                return res.status(400).json({message: "Student age have at least 2 characters."});
+            } else if (!/^[a-zA-Z0-9\s]+$/.test(studentName)) {
+                return res.status(400).json({message: "Invalid format for Student name."});
+            } else if (!/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(studentEmail)) {
+                return res.status(400).json({message: "Invalid email format."});
+            } else if (!/^[a-zA-Z\s\d]{5,}$/.test(studentClass)) {
+                return res.status(400).json({message: "Invalid Student class, It must have more than 4 characters with letters and spaces only."});
+            } else if (!/^[1-9][0-9]$/.test(studentAge)) {
+                return res.status(400).json({message: "Invalid Student age, It will only take in two digits."});
+            } else if (!/(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}/.test(password)) {
+                return res.status(400).json({message: "Password must have at least 8 characters, including one uppercase, one lowercase, and one digit."});
+            } else {
+                next();
+            }
+        }
+    } catch (error) {
+        res.status(500).json({
+            message: 'Internal server error.'
         })
-    } else {
-        next()
     }
 };
-
 
 
 const loginValStudent = async (req, res, next)=>{
-    const schema = await Joi.object({
-        studentEmail: Joi.string().pattern(/^[^\s@]+@[^\s@]+\.[^\s@]+$/).required().messages({
-            'string.pattern.base': 'Wrong Email format.',
-            "string.base": "Please provide your Email.",
-            "string.empty": "Please provide your Email.",
-        }),
-        password: Joi.string().required().pattern(/^[A-Za-z0-9]{6}$/).messages({
-            'string.pattern.base': 'Student Password must contain at least 6 characters with Capital or Small letters, or Number and spaces',
-            "string.base": "Please provide a pin number/password.",
-            "string.empty": "Please provide a pin number/password.",
-        })
-    })
-    const { error } = schema.validate(req.body);
-    if(error) {
-        const validateError = error.details.map((detail)=>detail.message);
-        // console.log(error)
-        res.status(409).json({
-            message: validateError
-        })
+    const {
+        studentEmail,
+        password
+    } = req.body;
+    if (
+        !studentEmail &&
+        !password
+    ) {
+        return res.status(400).json({message: "All fields are required."});
+    } else if (!studentEmail) {
+        return res.status(400).json({message: "Email is required."});
+    } else if (studentEmail.length < 4) {
+        return res.status(400).json({message: "Student email must have at least 4 characters."});
+    } else if (!/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(studentEmail)) {
+        return res.status(400).json({message: "Invalid email format."});
+    } else if (!password) {
+        return res.status(400).json({message: "Password is required."});
+    }  else if (password.length < 4) {
+        return res.status(400).json({message: "Password must have at least 4 characters."});
+    } else if (!/(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}/.test(password)) {
+        return res.status(400).json({message: "Password must have at least 8 characters, including one uppercase, one lowercase, and one digit."});
     } else {
-        next()
-    }
+        const isEmail = await teacherModel.findOne({ studentEmail });
+        if (!isEmail) {
+            res.status(400).json({
+                message: `Student with email: ${studentEmail}, doesn't exist. Do well to register with us. Try Again later.`
+            })
+        } else {
+            next();
+        };
+    };
 };
 
 
-const changePassValStudent = async (req, res, next)=>{
-    const schema = await Joi.object({
-        password: Joi.string().required().pattern(/^[A-Za-z0-9]{6}$/).messages({
-            'string.pattern.base': 'Student Password must contain at least 6 characters with Capital or Small letters, or Number and spaces',
-            "string.base": "Please provide a Password/pin number.",
-            "string.empty": "Please provide a Password/pin number.",
-        })
-    })
-    const { error } = schema.validate(req.body);
-    if(error) {
-        const validateError = error.details.map((detail)=>detail.message);
-        // console.log(error)
-        res.status(409).json({
-            message: validateError
-        })
-    } else {
-        next()
-    }
-};
 
+const changePassValStudent = async (req, res, studentId, next)=>{
+    const {
+        password
+    } = req.body;
+    if (!password) {
+        return res.status(400).json({message: "Password is required."});
+    } else if (password.length < 4) {
+        return res.status(400).json({message: "Password must have at least 4 characters."});
+    } else if (!/(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}/.test(password)) {
+        return res.status(400).json({message: "Password must have at least 8 characters, including one uppercase, one lowercase, and one digit."});
+    } else {
+        const isUser = await studentModel.findById(studentId);
+        if (!isUser) {
+            res.status(400).json({
+                message: `You are not a user on this Platform. Do well to register with us. Try Again later.`
+            })
+        } else {
+            next();
+        };
+    }
+}
 
 
 const forgotPassValStudent = async (req, res, next)=>{
-    const schema = await Joi.object({
-        studentEmail: Joi.string().pattern(/^[^\s@]+@[^\s@]+\.[^\s@]+$/).required().messages({
-            'string.pattern.base': 'Wrong Email format.',
-            "string.base": "Please provide your Email.",
-            "string.empty": "Please provide your Email.",
-        })
-    })
-    const { error } = schema.validate(req.body);
-    if(error) {
-        const validateError = error.details.map((detail)=>detail.message);
-        // console.log(error)
-        res.status(409).json({
-            message: validateError
-        })
+    const {
+        studentEmail
+    } = req.body;
+    if (!studentEmail) {
+        return res.status(400).json({message: "Student email is required."});
+    } else if (studentEmail.length < 4) {
+        return res.status(400).json({message: "Student email must have at least 4 characters."});
+    } else if (!/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(studentEmail)) {
+        return res.status(400).json({message: "Invalid email format."});
     } else {
         next()
     }
 };
-
-
-
-const validateUpdateStudent = async (req, res, next)=>{
-    const schema = await Joi.object({
-        studentName: Joi.string().pattern(/^[a-zA-Z\s]{5,}$/).messages({
-            'string.pattern.base': 'Student Name must contain at least 5 characters with letters and spaces only.',
-            "string.base": "Please provide your Name.",
-            "string.empty": "Please provide your Name.",
-          }),
-        studentEmail: Joi.string().pattern(/^[^\s@]+@[^\s@]+\.[^\s@]+$/).messages({
-            'string.pattern.base': 'Wrong Email format.',
-            "string.base": `Please provide the student's email.`,
-            "string.empty": `Please provide the student's email.`,
-          }),
-        studentClass: Joi.string().pattern(/^[a-zA-Z\s\d]{5,}$/).messages({
-            'string.pattern.base': 'Student Class must contain at least 5 characters with letters and spaces only.',
-            "string.base": `Please provide the student's class.`,
-            "string.empty": `Please provide the student's class.`,
-          }),
-        studentAge: Joi.string().pattern(/^[1-9][0-9]$/).messages({
-            'string.pattern.base': 'Students Age must take in only Two digits Numbers.',
-            "string.base": `Please provide the student's age.`,
-            "string.empty": `Please provide the student's age.`,
-          }),
-        password: Joi.string().pattern(/^[A-Za-z0-9]{6}$/).messages({
-            'string.pattern.base': 'Student Password must contain at least 6 characters with Capital or Small letters, or Number and spaces',
-            "string.base": `Please provide the student's pin number/password.`,
-            "string.empty": `Please provide the student's pin Number/password.`,
-          }),
-        confirmPassword: Joi.string().messages({
-            "string.base": `Please confirm the student's pin number/password.`,
-            "string.empty": `Please confirm the student's pin number/password.`,
-        }),
-    })
-    const { error } = schema.validate(req.body);
-    if(error) {
-        const validateError = error.details.map((detail)=>detail.message);
-        // console.log(error)
-        res.status(409).json({
-            message: validateError
-        })
-    } else {
-        next()
-    }
-};
-
-
 
 
 
@@ -169,6 +143,4 @@ module.exports = {
     validateStudent,
     loginValStudent,
     changePassValStudent,
-    forgotPassValStudent,
-    validateUpdateStudent
 };
