@@ -23,7 +23,7 @@ async function validateInputsMiddleware(req, res, next) {
             const isRegNo = await userModel.findOne({ regNo })
             if (isRegNo) {
                 res.status(400).json({
-                    message: 'School Registration Number already Exists. Reach out to the Registration body of the Federal Government.'
+                    message: 'School Registration Number already Exists. It is unique. Kindly Reach out to the Registration body of the Federal Government.'
                 })
             } else {
                 if (
