@@ -140,7 +140,8 @@ const resendEmailVerification = async (req, res)=>{
             } else {
                 const token = await genToken(user._id, '3m')
                 const subject = 'ProgressPal - Kindly Verify your School Registration'
-                const link = `${req.protocol}://${req.get('host')}/progressPal/verify/${user._id}/${token}`
+                // const link = `${req.protocol}://${req.get('host')}/progressPal/verify/${user._id}/${token}`
+                const link = `https://progresspalproject.onrender.com/#/verified_success/${user._id}/${token}`
                 const html = await genEmailReg(link)
                 emailSender({
                     email: user.schoolEmail,
@@ -175,7 +176,8 @@ const logIn = async(req, res)=>{
             if(!user.isVerified) {
                 const token = await genToken(user._id, '3m');
                 const subject = 'ProgressPal - Kindly Verify your School Registration'
-                const link = `${req.protocol}://${req.get('host')}/progressPal/verify/${user._id}/${token}`
+                // const link = `${req.protocol}://${req.get('host')}/progressPal/verify/${user._id}/${token}`
+                const link = `https://progresspalproject.onrender.com/#/verified_success/${user._id}/${token}`
                 const html = await genEmailReg(link)
                 emailSender({
                     email: user.schoolEmail,
