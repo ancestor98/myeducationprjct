@@ -14,15 +14,18 @@ const { genTokenLoginT, genTokensignUpT } = require('../middlewares/AuthandAuth/
 
 
 
-const newTeacher = async (req, res)=>{
+const newTeacher = async (req, res) => {
     try {
-        const { token } = req.params;
-        const { schoolId } = req.params;
-        await jwt.verify(token, process.env.JWT_SECRET, async (err)=>{
-            if(err) {
-                res.json('This link is Expired. Please, Inform your School Administrator to send you another registration Link.')
+        const { token, schoolId } = req.params;
+
+        jwt.verify(token, process.env.JWT_SECRET, async (err) => {
+            if (err) {
+                return res.status(400).json({
+                    message: 'This link is Expired. Please, Inform your School Administrator to send you another registration Link.'
+                });
             } else {
                 const school = await userModel.findById(schoolId);
+
                 const {
                     teacherName,
                     teacherClass,
@@ -31,81 +34,59 @@ const newTeacher = async (req, res)=>{
                     password,
                     confirmPassword
                 } = req.body;
-                if (req.files) {
-                    // const teacherImage = req.file.path;
-                    const teacherImage = req.files.teacherImage.tempFilePath
-                    const uploadImage = await cloudinary.uploader.upload(teacherImage);
-                    const salt = await bcrypt.genSalt(10);
-                    const hashConfirmPassword = await bcrypt.hash(confirmPassword, salt);
-                    const hashPassword = await bcrypt.hash(password, salt);
-                    const data = {
-                        teacherName: teacherName.toUpperCase(),
-                        teacherClass,
-                        teacherAge,
-                        teacherEmail: teacherEmail.toLowerCase(),
-                        password: hashPassword,
-                        confirmPassword: hashConfirmPassword,
-                        teacherImage: uploadImage.secure_url
-                    };
-                    const teacher = await new teacherModel(data);
-                    const tokens = await genTokensignUpT(teacher)
-                    teacher.token = tokens;
-                    teacher.link = school;
-                    savedTeacher = await teacher.save();
-                    school.teachers.push(savedTeacher);
-                    school.save();
-                    const subject = 'ProgressPal - welcome!';
-                    link = `https://progresspal-8rxj.onrender.com`
-                    // const message = `Welcome to ProgressPal, we are pleased to have you ${savedTeacher.teacherName} work with your School: ${savedTeacher.link.schoolName} on this Platform to better the education system of Nigeria. Feel free to give us feedback on what needs to be improved on the platform. You can contact us on whatsapp with the Phone Number: +2348100335322. Thank you.`
-                    const html = await genEmailReg(link)
-                    emailSender({
-                        email: teacherEmail,
-                        subject,
-                        html
-                    })
-                    res.status(200).json({
-                        message: 'Teacher saved successfully',
-                        data
-                    })
-                } else {
-                    const salt = await bcrypt.genSalt(10);
-                    const hashConfirmPassword = await bcrypt.hash(confirmPassword, salt);
-                    const hashPassword = await bcrypt.hash(password, salt);
-                    const user = await teacherModel.create(req.body);
-                    user.teacherName = teacherName.toUpperCase()
-                    user.teacherEmail = teacherEmail.toLowerCase()
-                    user.password = hashPassword
-                    user.confirmPassword = hashConfirmPassword
-                    await user.save();
 
-                    const tokens = await genTokensignUpT(user)
-                    user.token = tokens;
-                    user.link = school;
-                    savedTeacher = await user.save();
-                    school.teachers.push(savedTeacher);
-                    school.save();
-                    const subject = 'ProgressPal - welcome!';
-                    link = `https://progresspal-8rxj.onrender.com`
-                    // const message = `Welcome to ProgressPal, we are pleased to have you ${savedTeacher.teacherName} work with your School: ${savedTeacher.link.schoolName} on this Platform to better the education system of Nigeria. Feel free to give us feedback on what needs to be improved on the platform. You can contact us on whatsapp with the Phone Number: +2348100335322. Thank you.`
-                    const html = await genEmailReg(link)
-                    emailSender({
-                        email: teacherEmail,
-                        subject,
-                        html
-                    })
-                    res.status(200).json({
-                        message: 'Teacher saved successfully',
-                        user
-                    })
+                const salt = await bcrypt.genSalt(10);
+                const hashConfirmPassword = await bcrypt.hash(confirmPassword, salt);
+                const hashPassword = await bcrypt.hash(password, salt);
+
+                const data = {
+                    teacherName: teacherName.toUpperCase(),
+                    teacherClass,
+                    teacherAge,
+                    teacherEmail: teacherEmail.toLowerCase(),
+                    password: hashPassword,
+                    confirmPassword: hashConfirmPassword
+                };
+
+                if (req.files) {
+                    const teacherImage = req.files.teacherImage.tempFilePath;
+                    const uploadImage = await cloudinary.uploader.upload(teacherImage);
+                    data.teacherImage = uploadImage.secure_url;
                 }
+
+                const teacher = new teacherModel(data);
+                const tokens = await genTokensignUpT(teacher);
+                teacher.token = tokens;
+                teacher.link = school;
+                await teacher.save();
+
+                school.teachers.push(teacher);
+                await school.save();
+
+                const subject = 'ProgressPal - welcome!';
+                const link = 'https://progresspal-8rxj.onrender.com';
+                const html = await genEmailReg(link);
+
+                emailSender({
+                    email: teacherEmail,
+                    subject,
+                    html
+                });
+
+                res.status(200).json({
+                    message: 'Teacher saved successfully',
+                    teacher
+                });
             }
-        })
+        });
     } catch (error) {
         res.status(500).json({
             message: error.message
-        })
+        });
     }
 };
+
+
 
 
 // Login
@@ -129,6 +110,7 @@ const teacherLogin = async (req, res)=>{
                 const token = await genTokenLoginT(user)
                 res.status(200).json({
                     message: 'Log in Successful',
+                    data: islogin,
                     token: token
                 })
             }

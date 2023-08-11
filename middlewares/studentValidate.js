@@ -147,6 +147,8 @@ async function updateStudentInfoMiddleware (req, res, next) {
         if (studentAge && !/^[1-9][0-9]$/.test(studentAge)) {
             return res.status(400).json({ message: "Invalid Student age, It will only take in two digits." });
         }
+
+        next()
     } catch (error) {
         res.status(500).json({
             message: 'Internal server error.'

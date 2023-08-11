@@ -214,6 +214,7 @@ const logIn = async(req, res)=>{
                     const token = await genTokenLogin(user)
                     res.status(200).json({
                         message: 'Log in Successful',
+                        data: islogin,
                         token: token
                     });
                 }

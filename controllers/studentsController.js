@@ -16,68 +16,7 @@ const { genTokenLoginS, genTokensignUpS } = require('../middlewares/AuthandAuth/
 
 
 
-// const newStudent = async (req, res)=>{
-//     try {
-//         const {
-//             studentName,
-//             studentClass,
-//             studentAge,
-//             studentEmail,
-//             password
-//         } = req.body;
-//         const { teacherId } = req.params;
-//         const teacher = await teacherModel.findById(teacherId).populate('link').populate('students');
-//         const studentImage = req.files.studentPassport.tempFilePath
-//         const uploadImage = await cloudinary.uploader.upload(studentImage);
-//         const isEmail = await studentModel.findOne({studentEmail});
-//         if (isEmail) {
-//             res.status(400).json({
-//                 message: `Student with this Email: ${studentEmail} already exist.`
-//             })
-//         } else {
-//             const salt = await bcrypt.genSalt(10);
-//             const hashPassword = await bcrypt.hash(password, salt);
-//             const data = {
-//                 studentName: studentName.toUpperCase(),
-//                 studentClass,
-//                 studentAge,
-//                 studentEmail: studentEmail.toLowerCase(),
-//                 password: hashPassword,
-//                 studentPassport: uploadImage.secure_url
-//             }
-//             const student = await new studentModel(data);
-//             const tokens = await genTokensignUpS(student)
-//             student.token = tokens;
-//             student.link = teacher;
-//             savedStudent = await student.save();
-//             teacher.students.push(savedStudent);
-//             teacher.save();
-//             const subject = 'ProgressPal - welcome!';
-//             const link = `${req.protocol}://${req.get('host')}/progressPal`
-//             const html = await genEmailReg(link, teacherId)
-//             emailSender({
-//                 email: studentEmail,
-//                 subject,
-//                 html
-//             })
-//             res.status(200).json({
-//                 message: 'Student saved successfully',
-//                 data
-//             })
-//         }
-//     } catch (error) {
-//         res.status(500).json({
-//             message: error.message
-//         })
-//     }
-// };
-
-
-
-
-
-
-const newStudent = async (req, res)=>{
+const newStudent = async (req, res) => {
     try {
         const {
             studentName,
@@ -87,103 +26,60 @@ const newStudent = async (req, res)=>{
             password
         } = req.body;
         const { teacherId } = req.params;
-        const teacher = await teacherModel.findById(teacherId).populate('link').populate('students');
+        
+        const teacher = await teacherModel.findById(teacherId);
+        
+        if (!teacher) {
+            return res.status(404).json({ message: 'Teacher not found' });
+        }
+
+        const salt = await bcrypt.genSalt(10);
+        const hashPassword = await bcrypt.hash(password, salt);
+
+        const data = {
+            studentName: studentName.toUpperCase(),
+            studentClass,
+            studentAge,
+            studentEmail: studentEmail.toLowerCase(),
+            password: hashPassword
+        };
 
         if (req.files) {
-            const studentImage = req.files.studentPassport.tempFilePath
+            const studentImage = req.files.studentPassport.tempFilePath;
             const uploadImage = await cloudinary.uploader.upload(studentImage);
+            data.studentPassport = uploadImage.secure_url;
+        }
+
+        const student = new studentModel(data);
+        const tokens = await genTokensignUpS(student);
+        student.token = tokens;
+        student.link = teacher;
+
+        await student.save();
         
-            const salt = await bcrypt.genSalt(10);
-            const hashPassword = await bcrypt.hash(password, salt);
-            const data = {
-                studentName: studentName.toUpperCase(),
-                studentClass,
-                studentAge,
-                studentEmail: studentEmail.toLowerCase(),
-                password: hashPassword,
-                studentPassport: uploadImage.secure_url
-            }
-            const student = await new studentModel(data);
-            const tokens = await genTokensignUpS(student)
-            student.token = tokens;
-            student.link = teacher;
-            savedStudent = await student.save();
-            teacher.students.push(savedStudent);
-            teacher.save();
-            const subject = 'ProgressPal - welcome!';
-            const link = `${req.protocol}://${req.get('host')}/progressPal`
-            const html = await genEmailReg(link, teacherId)
-            emailSender({
-                email: studentEmail,
-                subject,
-                html
-            })
-            res.status(200).json({
-                message: 'Student saved successfully'
-            })
-        } else {
+        teacher.students.push(student);
+        await teacher.save();
+        
+        const subject = 'ProgressPal - welcome!';
+        const link = `${req.protocol}://${req.get('host')}/progressPal`;
+        const html = await genEmailReg(link, teacherId, student);
+        
+        emailSender({
+            email: studentEmail,
+            subject,
+            html
+        });
 
-            const salt = await bcrypt.genSalt(10);
-            const hashPassword = await bcrypt.hash(password, salt);
-            const student = await studentModel.create(req.body);
-            student.studentName = studentName.toUpperCase()
-            student.studentEmail = studentEmail.toLowerCase()
-            student.password = hashPassword
-            // await student.save();
-
-
-
-            const tokens = await genTokensignUpS(student)
-            student.token = tokens;
-            student.link = teacher;
-            await student.save();
-            teacher.students.push(student);
-            teacher.save();
-            const subject = 'ProgressPal - welcome!';
-            const link = `${req.protocol}://${req.get('host')}/progressPal`
-            const html = await genEmailReg(link, teacherId, student)
-            emailSender({
-                email: studentEmail,
-                subject,
-                html
-            })
-            res.status(201).json({
-                message: 'Student saved successfully',
-                student
-            })
-        }  
+        res.status(201).json({
+            message: 'Student saved successfully',
+            student
+        });
     } catch (error) {
         res.status(500).json({
             message: error.message
-        })
+        });
     }
 };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -210,6 +106,7 @@ const studentLogin = async (req, res)=>{
                 const token = await genTokenLoginS(user)
                 res.status(200).json({
                     message: 'Log in Successful',
+                    data: islogin,
                     token: token
                 })
             }
@@ -307,8 +204,8 @@ const resetPasswordStudent = async (req, res)=>{
 };
 
 
-// Update School
-const updateSchoolStudent = async (req, res)=>{
+ // Update School
+const updateSchoolStudent = async (req, res) => {
     try {
         const {
             studentName,
@@ -316,61 +213,83 @@ const updateSchoolStudent = async (req, res)=>{
             studentAge,
             studentEmail,
         } = req.body;
-        // const userLogo = req.file.path;
+
         const userLogo = req.files.studentPassport.tempFilePath;
         const { studentId } = req.params;
         const user = await studentModel.findById(studentId);
-        if(!user) {
-            res.status(404).json({
-                message: 'Teacher not Found'
-            })
-        } else {
-            const data = {
-                studentName: studentName || user.studentName,
-                studentClass: studentClass || user.studentClass,
-                studentAge: studentAge || user.studentAge,
-                studentEmail: studentEmail || user.studentEmail,
-                studentPassport: user.studentPassport,
-                password: user.password,
-                link: user.link,
-                students: user.students
-            }
-            if (userLogo) {
-                const public_id = user.studentPassport.split('/').pop().split('.')[0];
-                await cloudinary.uploader.destroy(public_id);
-                const newImage = await cloudinary.uploader.upload(userLogo)
-                data.studentPassport = newImage.secure_url
-                const updatedTeacherwithImage = await studentModel.findByIdAndUpdate(studentId, data, {new: true});
-                if (!updatedTeacherwithImage) {
-                    res.status(400).json({
-                        message: 'Could not update student Info with Image'
-                    })
-                } else {
-                    res.status(200).json({
-                        message: 'Successfully Updated student Info with Image',
-                        data: updatedTeacherwithImage
-                    })
-                }
+
+        if (!user) {
+            return res.status(404).json({
+                message: 'Student not Found'
+            });
+        }
+
+        const data = {
+            studentName: studentName.toUpperCase() || user.studentName,
+            studentClass: studentClass || user.studentClass,
+            studentAge: studentAge || user.studentAge,
+            studentEmail: studentEmail.toLowerCase() || user.studentEmail,
+            studentPassport: user.studentPassport,
+            password: user.password,
+            link: user.link,
+            students: user.students
+        };
+
+        if (userLogo) {
+            const public_id = user.studentPassport.split('/').pop().split('.')[0];
+            await cloudinary.uploader.destroy(public_id);
+            const newImage = await cloudinary.uploader.upload(userLogo);
+            data.studentPassport = newImage.secure_url;
+
+            const updatedStudentWithImage = await studentModel.findByIdAndUpdate(studentId, data, { new: true });
+
+            if (!updatedStudentWithImage) {
+                res.status(400).json({
+                    message: 'Could not update student Info with Image'
+                });
             } else {
-                const updatedTeacher = await studentModel.findByIdAndUpdate(studentId, data, {new: true});
-                if (!updatedTeacher) {
-                    res.status(400).json({
-                        message: 'Could not update student Info with Image'
-                    })
-                } else {
-                    res.status(200).json({
-                        message: 'Successfully Updated student Info with Image',
-                        data: updatedTeacher
-                    })
-                }
+                res.status(200).json({
+                    message: 'Successfully Updated student Info with Image',
+                    data: updatedStudentWithImage
+                });
+            }
+        } else {
+            const updatedStudent = await studentModel.findByIdAndUpdate(studentId, data, { new: true });
+
+            if (!updatedStudent) {
+                res.status(400).json({
+                    message: 'Could not update student Info'
+                });
+            } else {
+                res.status(200).json({
+                    message: 'Successfully Updated student Info',
+                    data: updatedStudent
+                });
             }
         }
     } catch (error) {
         res.status(500).json({
             message: error.message
-        })
+        });
     }
 };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 // Delete Teacher
