@@ -43,7 +43,7 @@ const register = async (req, res)=>{
             const tokens = await genTokensignUp(user)
             user.token = tokens;
             const savedUser = await user.save();
-            const token = await genToken(savedUser._id, '3m');
+            const token = await genToken(savedUser._id, '30m');
             const subject = 'ProgressPal - Kindly Verify your School Registration'
             // const link = `${req.protocol}://${req.get('host')}/progressPal/verify/${savedUser._id}/${token}`
             const link = `https://progresspalproject.onrender.com/#/verified_success/${savedUser._id}/${token}`

@@ -1,7 +1,7 @@
 const teacherModel = require('../../models/teachersModel')
 
 // This function generates the email template with a dynamic link
-async function genEmailReg(link, teacherId) {
+async function genEmailReg(link, teacherId, savedStudent) {
   const teacher = await teacherModel.findById(teacherId).populate('link').populate('students');
     return `
     <!DOCTYPE html>

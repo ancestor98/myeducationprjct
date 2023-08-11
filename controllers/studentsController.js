@@ -119,33 +119,35 @@ const newStudent = async (req, res)=>{
                 html
             })
             res.status(200).json({
-                message: 'Student saved successfully',
-                data
+                message: 'Student saved successfully'
             })
         } else {
 
             const salt = await bcrypt.genSalt(10);
             const hashPassword = await bcrypt.hash(password, salt);
-            
             const student = await studentModel.create(req.body);
-            const tokens = await genTokensignUpS(student)
             student.studentName = studentName.toUpperCase()
             student.studentEmail = studentEmail.toLowerCase()
             student.password = hashPassword
+            await student.save();
+
+
+
+            const tokens = await genTokensignUpS(student)
             student.token = tokens;
             student.link = teacher;
-            savedStudent = await student.save();
+            const savedStudent = await student.save();
             teacher.students.push(savedStudent);
             teacher.save();
             const subject = 'ProgressPal - welcome!';
             const link = `${req.protocol}://${req.get('host')}/progressPal`
-            const html = await genEmailReg(link, teacherId)
+            const html = await genEmailReg(link, teacherId, savedStudent)
             emailSender({
                 email: studentEmail,
                 subject,
                 html
             })
-            res.status(200).json({
+            res.status(201).json({
                 message: 'Student saved successfully',
                 student
             })
