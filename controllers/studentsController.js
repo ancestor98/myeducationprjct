@@ -129,19 +129,19 @@ const newStudent = async (req, res)=>{
             student.studentName = studentName.toUpperCase()
             student.studentEmail = studentEmail.toLowerCase()
             student.password = hashPassword
-            await student.save();
+            // await student.save();
 
 
 
             const tokens = await genTokensignUpS(student)
             student.token = tokens;
             student.link = teacher;
-            const savedStudent = await student.save();
-            teacher.students.push(savedStudent);
+            await student.save();
+            teacher.students.push(student);
             teacher.save();
             const subject = 'ProgressPal - welcome!';
             const link = `${req.protocol}://${req.get('host')}/progressPal`
-            const html = await genEmailReg(link, teacherId, savedStudent)
+            const html = await genEmailReg(link, teacherId, student)
             emailSender({
                 email: studentEmail,
                 subject,

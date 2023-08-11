@@ -114,7 +114,9 @@ const verifyEmail = async (req, res)=>{
         const { schoolId } = req.params;
         await jwt.verify(token, process.env.JWT_SECRET, async (err)=>{
             if(err) {
-                res.json('This link is Expired. Send another Email Verification.')
+                res.status(400).json({
+                    message: 'This link is Expired. Send another Email Verification.'
+                })
             } else {
                 const verify = await userModel.findByIdAndUpdate(schoolId, {isVerified: true});
                 if (!verify) {
