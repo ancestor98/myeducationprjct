@@ -322,7 +322,7 @@ const teacherLink = async (req, res)=>{
         // console.log(token);
         const subject = 'ProgressPal - Teacher Registration'
         // const link = `${req.protocol}://${req.get('host')}/progressPal/newTeacher/${schoolId}/${token}`
-        const link = `https://progresspalproject.onrender.com/#/teacher_signup/`
+        const link = `https://progresspalproject.onrender.com/#/teacher_signup/schoolId/${token}`
         const html = await genTeacherEmail(link, schoolId)
         emailSender({
             email: teacherEmail,
