@@ -321,7 +321,8 @@ const teacherLink = async (req, res)=>{
         const token = await genToken(schoolId, '1d');
         // console.log(token);
         const subject = 'ProgressPal - Teacher Registration'
-        const link = `${req.protocol}://${req.get('host')}/progressPal/newTeacher/${schoolId}/${token}`
+        // const link = `${req.protocol}://${req.get('host')}/progressPal/newTeacher/${schoolId}/${token}`
+        const link = `https://progresspalproject.onrender.com/#/teacher_signup/`
         const html = await genTeacherEmail(link, schoolId)
         emailSender({
             email: teacherEmail,
