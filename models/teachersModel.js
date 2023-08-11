@@ -14,7 +14,10 @@ const teacherSchema = new mongoose.Schema({
         type: String
     },
     teacherImage: {
-        type: String
+        type: String,
+        default: function() {
+            return `TeacherLogoAvatar`
+        }
     },
     password: {
         type: String

@@ -17,7 +17,10 @@ const studentSchema = new mongoose.Schema({
         type: String
     },
     studentPassport: {
-        type: String
+        type: String,
+        default: function() {
+            return `StudentLogoAvatar`
+        }
     },
     token: {
         type: String

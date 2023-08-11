@@ -26,19 +26,22 @@ const {
     loginVal,
     changePassVal,
     forgotPassVal,
-    teacherEmailVal
+    teacherEmailVal,
+    updateUserInfoMiddleware
 } = require('../middlewares/userValidate')
 const {
     
     validateteacher,
     loginValTeacher,
     changePassValTeacher,
-    forgotPassValTeacher
+    forgotPassValTeacher,
+    updateTeacherInfoMiddleware
 } = require('../middlewares/teacherValidate');
 const {
     validateStudent,
     loginValStudent,
-    changePassValStudent
+    changePassValStudent,
+    updateStudentInfoMiddleware
 } = require('../middlewares/studentValidate')
 
 
@@ -110,7 +113,7 @@ route.post('/logout/:schoolId', loginAuthSchool, signOut)
 route.put("/changePassword/:schoolId", changePassVal, changePassword);
 route.post("/forgot-password", forgotPassVal, forgotPassword);
 route.put("/reset-password/:schoolId/:token", changePassVal, resetPassword);
-route.put('/updateSchool/:schoolId', updateSchool)
+route.put('/updateSchool/:schoolId', updateUserInfoMiddleware, updateSchool)
 route.delete('/deleteSchool/:schoolId', deleteSchool)
 route.post('/teacherLink/:schoolId', teacherEmailVal, teacherLink)
 route.get('/readAllSchools', readAllSchools);
@@ -124,7 +127,7 @@ route.post('/logoutTeacher/:teacherId', loginAuthTeacher, signOutTeacher)
 route.put("/changePasswordTeacher/:teacherId", changePassValTeacher, changePasswordTeacher);
 route.post("/forgot-passwordTeacher", forgotPassValTeacher, forgotPasswordTeacher);
 route.put("/reset-passwordTeacher/:teacherId/:token", changePassValTeacher, resetPasswordTeacher);
-route.put('/updateTeacher/:teacherId', updateSchoolTeacher)
+route.put('/updateTeacher/:teacherId', updateTeacherInfoMiddleware, updateSchoolTeacher)
 route.delete('/deleteTeacher/:teacherId', deleteSchoolTeacher)
 route.get('/readAllTeachers', readAllTeachers);
 route.get('/readOneTeacher/:teacherId', readOneTeacher);
@@ -138,7 +141,7 @@ route.post('/logoutStudent/:studentId', loginAuthStudent, signOutStudent)
 route.put("/changePasswordStudent/:studentId", changePassValStudent, changePasswordStudent);
 route.post("/forgot-passwordStudent", forgotPasswordStudent);
 route.put("/reset-passwordStudent/:studentId/:token", changePassValStudent, resetPasswordStudent);
-route.put('/updateStudent/:studentId', updateSchoolStudent);
+route.put('/updateStudent/:studentId', updateStudentInfoMiddleware, updateSchoolStudent);
 route.delete('/deleteStudent/:studentId', deleteSchoolStudent);
 route.get('/readAllStudent', readAllStudent);
 route.get('/readOneStudent/:studentId', readOneStudent);

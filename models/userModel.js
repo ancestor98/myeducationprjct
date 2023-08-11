@@ -11,22 +11,27 @@ const userSchema = new mongoose.Schema({
     },
     schoolAddress: {
         type: String,
-        required: [true, 'School address is Required']
+        default: function() {
+            return `No 1 ${this.schoolName}`;
+        }
     },
     state: {
         type: String,
-        required: [true, 'School State is Required']
+        default: 'Lagos'
     },
     country: {
         type: String,
-        required: [true, 'School Country is Required']
+        default: 'Nigeria'
     },
     schoolLogo: {
-        type: String
+        type: String,
+        default: function() {
+            return `SchoolLogoAvatar`
+        }
     },
     regNo: {
         type: String,
-        required: [true, 'School Registration Numer is Required']
+        default: `PRM-ABCD-${Math.floor(Math.random() * 9000) + 1000}`
     },
     password: {
         type: String,
@@ -37,7 +42,10 @@ const userSchema = new mongoose.Schema({
         required: [true, 'Password is Required']
     },
     website: {
-        type: String
+        type: String,
+        default: function() {
+            return this.schoolEmail;
+        }
     },
     isAdmin: {
         type: Boolean,

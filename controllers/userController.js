@@ -7,9 +7,9 @@ const cloudinary = require('../utilities/cloudinary');
 const { genToken, decodeToken } = require('../utilities/jwt');
 const emailSender = require('../middlewares/email');
 const { genEmailReg } = require('../utilities/schoolEmail/register');
-const {forgetPassEmail} = require("../utilities/schoolEmail/forgetpassword")
-const {genTeacherEmail} = require("../utilities/schoolEmail/teacherReg")
-const { genTokenLogin, genTokensignUp } = require('../middlewares/AuthandAuth/login')
+const {forgetPassEmail} = require("../utilities/schoolEmail/forgetpassword");
+const {genTeacherEmail} = require("../utilities/schoolEmail/teacherReg");
+const { genTokenLogin, genTokensignUp } = require('../middlewares/AuthandAuth/login');
 
 
 
@@ -19,68 +19,82 @@ const register = async (req, res)=>{
         const {
             schoolName,
             schoolEmail,
-            schoolAddress,
-            state,
-            country,
-            schoolLogo,
-            regNo,
             password,
-            confirmPassword,
-            website,
+            confirmPassword
         } = req.body;
-        const userLogo = req.files.schoolLogo.tempFilePath
-        const uploadLogo = await cloudinary.uploader.upload(userLogo);
+        
 
-        if (password !== confirmPassword) {
-            res.status(400).json({
-                message: 'Make sure your Input Password corresponds with your Confirm Password'
+        
+        if (req.files) {
+            // console.log(req.files)
+            const userLogo = req.files.schoolLogo.tempFilePath
+            const uploadLogo = await cloudinary.uploader.upload(userLogo);
+            const salt = await bcrypt.genSalt(10);
+            const hashConfirmPassword = await bcrypt.hash(confirmPassword, salt);
+            const hashPassword = await bcrypt.hash(password, salt);
+            const data = {
+                schoolName: schoolName.toUpperCase(),
+                schoolEmail: schoolEmail.toLowerCase(),
+                schoolLogo: uploadLogo.secure_url,
+                password: hashPassword,
+                confirmPassword: hashConfirmPassword
+            }
+            const user = new userModel(data);
+            const tokens = await genTokensignUp(user)
+            user.token = tokens;
+            const savedUser = await user.save();
+            const token = await genToken(savedUser._id, '3m');
+            const subject = 'ProgressPal - Kindly Verify your School Registration'
+            // const link = `${req.protocol}://${req.get('host')}/progressPal/verify/${savedUser._id}/${token}`
+            const link = `https://progresspalproject.onrender.com/#/verified_success/${savedUser._id}/${token}`
+            const html = await genEmailReg(link)
+            emailSender({
+                email: schoolEmail,
+                subject,
+                html
             })
-        } else {
-            const isEmail = await userModel.findOne({schoolEmail});
-            if (isEmail) {
+            if (!savedUser) {
                 res.status(400).json({
-                    message: `School with this Email: ${schoolEmail} already exist.`
+                    message: `Failed to create School account, Try Again.`
                 })
             } else {
-                const salt = await bcrypt.genSalt(10);
-                const hashConfirmPassword = await bcrypt.hash(confirmPassword, salt);
-                const hashPassword = await bcrypt.hash(password, salt);
-                const data = {
-                    schoolName: schoolName.toUpperCase(),
-                    schoolEmail: schoolEmail.toLowerCase(),
-                    schoolAddress,
-                    state,
-                    country,
-                    schoolLogo: uploadLogo.secure_url,
-                    regNo,
-                    password: hashPassword,
-                    confirmPassword: hashConfirmPassword,
-                    website
-                }
-                const user = new userModel(data);
-                const tokens = await genTokensignUp(user)
-                user.token = tokens;
-                const savedUser = await user.save();
-                const token = await genToken(savedUser._id, '3m');
-                const subject = 'ProgressPal - Kindly Verify your School Registration'
-                // const link = `${req.protocol}://${req.get('host')}/progressPal/verify/${savedUser._id}/${token}`
-                const link = `https://progresspalproject.onrender.com/#/verified_success/${savedUser._id}/${token}`
-                const html = await genEmailReg(link)
-                emailSender({
-                    email: schoolEmail,
-                    subject,
-                    html
+                res.status(201).json({
+                    message: `${schoolName} has been successfully registered. Check your School Email to verify your account.`,
+                    user: savedUser
                 })
-                if (!savedUser) {
-                    res.status(400).json({
-                        message: `Failed to create School account, Try Again.`
-                    })
-                } else {
-                    res.status(201).json({
-                        message: `${schoolName} has been successfully registered. Check your School Email to verify your account.`,
-                        user: savedUser
-                    })
-                }
+            }
+        } else {
+            const salt = await bcrypt.genSalt(10);
+            const hashConfirmPassword = await bcrypt.hash(confirmPassword, salt);
+            const hashPassword = await bcrypt.hash(password, salt);
+            const user = await userModel.create(req.body);
+            user.schoolName = schoolName.toUpperCase()
+            user.schoolEmail = schoolEmail.toLowerCase()
+            user.password = hashPassword
+            user.confirmPassword = hashConfirmPassword
+            
+            const tokens = await genTokensignUp(user)
+            user.token = tokens;
+            const savedUser = await user.save();
+            const token = await genToken(savedUser._id, '3m');
+            const subject = 'ProgressPal - Kindly Verify your School Registration'
+            // const link = `${req.protocol}://${req.get('host')}/progressPal/verify/${savedUser._id}/${token}`
+            const link = `https://progresspalproject.onrender.com/#/verified_success/${savedUser._id}/${token}`
+            const html = await genEmailReg(link)
+            emailSender({
+                email: schoolEmail,
+                subject,
+                html
+            })
+            if (!savedUser) {
+                res.status(400).json({
+                    message: `Failed to create School account, Try Again.`
+                })
+            } else {
+                res.status(201).json({
+                    message: `${schoolName} has been successfully registered. Check your School Email to verify your account.`,
+                    user: savedUser
+                })
             }
         }
     } catch (error) {
@@ -302,7 +316,7 @@ const teacherLink = async (req, res)=>{
     try {
         const { teacherEmail } = req.body;
         const { schoolId } = req.params;
-        const token = await genToken(schoolId, '30m');
+        const token = await genToken(schoolId, '1d');
         // console.log(token);
         const subject = 'ProgressPal - Teacher Registration'
         const link = `${req.protocol}://${req.get('host')}/progressPal/newTeacher/${schoolId}/${token}`
@@ -339,8 +353,7 @@ const updateSchool = async (req, res)=>{
             regNo,
             website,
         } = req.body;
-        // const userLogo = req.file.path;
-        const userLogo = req.files.schoolLogo.tempFilePath
+        
         const { schoolId } = req.params;
         const user = await userModel.findById(schoolId);
 
@@ -355,10 +368,8 @@ const updateSchool = async (req, res)=>{
                 schoolAddress: schoolAddress || user.schoolAddress,
                 state: state || user.state,
                 country: country || user.country,
-                schoolLogo: schoolLogo || user.schoolLogo,
-                regNo: user.regNo,
-                password: user.password,
-                confirmPassword: user.confirmPassword,
+                schoolLogo: user.schoolLogo,
+                regNo: regNo || user.regNo,
                 website: website || user.website,
                 isAdmin: user.isAdmin,
                 isSuperAdmin: user.isSuperAdmin,
@@ -366,7 +377,9 @@ const updateSchool = async (req, res)=>{
                 teachers: user.teachers
             }
 
-            if (userLogo) {
+            if (req.files) {
+                // const userLogo = req.file.path;
+                const userLogo = req.files.schoolLogo.tempFilePath
                 const public_id = user.schoolLogo.split('/').pop().split('.')[0];
                 await cloudinary.uploader.destroy(public_id);
                 const newLogo = await cloudinary.uploader.upload(userLogo)

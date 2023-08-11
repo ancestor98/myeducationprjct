@@ -16,6 +16,67 @@ const { genTokenLoginS, genTokensignUpS } = require('../middlewares/AuthandAuth/
 
 
 
+// const newStudent = async (req, res)=>{
+//     try {
+//         const {
+//             studentName,
+//             studentClass,
+//             studentAge,
+//             studentEmail,
+//             password
+//         } = req.body;
+//         const { teacherId } = req.params;
+//         const teacher = await teacherModel.findById(teacherId).populate('link').populate('students');
+//         const studentImage = req.files.studentPassport.tempFilePath
+//         const uploadImage = await cloudinary.uploader.upload(studentImage);
+//         const isEmail = await studentModel.findOne({studentEmail});
+//         if (isEmail) {
+//             res.status(400).json({
+//                 message: `Student with this Email: ${studentEmail} already exist.`
+//             })
+//         } else {
+//             const salt = await bcrypt.genSalt(10);
+//             const hashPassword = await bcrypt.hash(password, salt);
+//             const data = {
+//                 studentName: studentName.toUpperCase(),
+//                 studentClass,
+//                 studentAge,
+//                 studentEmail: studentEmail.toLowerCase(),
+//                 password: hashPassword,
+//                 studentPassport: uploadImage.secure_url
+//             }
+//             const student = await new studentModel(data);
+//             const tokens = await genTokensignUpS(student)
+//             student.token = tokens;
+//             student.link = teacher;
+//             savedStudent = await student.save();
+//             teacher.students.push(savedStudent);
+//             teacher.save();
+//             const subject = 'ProgressPal - welcome!';
+//             const link = `${req.protocol}://${req.get('host')}/progressPal`
+//             const html = await genEmailReg(link, teacherId)
+//             emailSender({
+//                 email: studentEmail,
+//                 subject,
+//                 html
+//             })
+//             res.status(200).json({
+//                 message: 'Student saved successfully',
+//                 data
+//             })
+//         }
+//     } catch (error) {
+//         res.status(500).json({
+//             message: error.message
+//         })
+//     }
+// };
+
+
+
+
+
+
 const newStudent = async (req, res)=>{
     try {
         const {
@@ -27,14 +88,11 @@ const newStudent = async (req, res)=>{
         } = req.body;
         const { teacherId } = req.params;
         const teacher = await teacherModel.findById(teacherId).populate('link').populate('students');
-        const studentImage = req.files.studentPassport.tempFilePath
-        const uploadImage = await cloudinary.uploader.upload(studentImage);
-        const isEmail = await studentModel.findOne({studentEmail});
-        if (isEmail) {
-            res.status(400).json({
-                message: `Student with this Email: ${studentEmail} already exist.`
-            })
-        } else {
+
+        if (req.files) {
+            const studentImage = req.files.studentPassport.tempFilePath
+            const uploadImage = await cloudinary.uploader.upload(studentImage);
+        
             const salt = await bcrypt.genSalt(10);
             const hashPassword = await bcrypt.hash(password, salt);
             const data = {
@@ -64,13 +122,68 @@ const newStudent = async (req, res)=>{
                 message: 'Student saved successfully',
                 data
             })
-        }
+        } else {
+
+            const salt = await bcrypt.genSalt(10);
+            const hashPassword = await bcrypt.hash(password, salt);
+            
+            const student = await studentModel.create(req.body);
+            const tokens = await genTokensignUpS(student)
+            student.studentName = studentName.toUpperCase()
+            student.studentEmail = studentEmail.toLowerCase()
+            student.password = hashPassword
+            student.token = tokens;
+            student.link = teacher;
+            savedStudent = await student.save();
+            teacher.students.push(savedStudent);
+            teacher.save();
+            const subject = 'ProgressPal - welcome!';
+            const link = `${req.protocol}://${req.get('host')}/progressPal`
+            const html = await genEmailReg(link, teacherId)
+            emailSender({
+                email: studentEmail,
+                subject,
+                html
+            })
+            res.status(200).json({
+                message: 'Student saved successfully',
+                student
+            })
+        }  
     } catch (error) {
         res.status(500).json({
             message: error.message
         })
     }
 };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
