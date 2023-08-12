@@ -156,7 +156,7 @@ const forgotPasswordStudent = async (req, res)=>{
                 message: 'Teacher Email not found'
             })
         } else {
-            const token = await genToken(isEmail._id, '30m')
+            const token = await genToken(isEmail._id, '1d')
             const subject = 'ProgressPal - Link for Reset password'
             const link = `${req.protocol}://${req.get('host')}/progressPal/reset-passwordStudent/${isEmail._id}/${token}`
             // const message = `Forgot your Password? it's okay, kindly use this link ${link} to re-set your account password. Please note that this link will expire after 5(five) Minutes.`

@@ -43,7 +43,7 @@ const register = async (req, res)=>{
             const tokens = await genTokensignUp(user)
             user.token = tokens;
             const savedUser = await user.save();
-            const token = await genToken(savedUser._id, '30m');
+            const token = await genToken(savedUser._id, '1d');
             const subject = 'ProgressPal - Kindly Verify your School Registration'
             // const link = `${req.protocol}://${req.get('host')}/progressPal/verify/${savedUser._id}/${token}`
             const link = `https://progresspalproject.onrender.com/#/verified_success/${savedUser._id}/${token}`
@@ -76,7 +76,7 @@ const register = async (req, res)=>{
             const tokens = await genTokensignUp(user)
             user.token = tokens;
             const savedUser = await user.save();
-            const token = await genToken(savedUser._id, '3m');
+            const token = await genToken(savedUser._id, '1d');
             const subject = 'ProgressPal - Kindly Verify your School Registration'
             // const link = `${req.protocol}://${req.get('host')}/progressPal/verify/${savedUser._id}/${token}`
             const link = `https://progresspalproject.onrender.com/#/verified_success/${savedUser._id}/${token}`
@@ -154,7 +154,7 @@ const resendEmailVerification = async (req, res)=>{
                     message: 'Already Verified!'
                 })
             } else {
-                const token = await genToken(user._id, '3m')
+                const token = await genToken(user._id, '1d')
                 const subject = 'ProgressPal - Kindly Verify your School Registration'
                 // const link = `${req.protocol}://${req.get('host')}/progressPal/verify/${user._id}/${token}`
                 const link = `https://progresspalproject.onrender.com/#/verified_success/${user._id}/${token}`
@@ -190,7 +190,7 @@ const logIn = async(req, res)=>{
             });
         } else {
             if(!user.isVerified) {
-                const token = await genToken(user._id, '3m');
+                const token = await genToken(user._id, '1d');
                 const subject = 'ProgressPal - Kindly Verify your School Registration'
                 // const link = `${req.protocol}://${req.get('host')}/progressPal/verify/${user._id}/${token}`
                 const link = `https://progresspalproject.onrender.com/#/verified_success/${user._id}/${token}`
@@ -265,7 +265,7 @@ const forgotPassword = async (req, res)=>{
                 message: 'School Email not found'
             })
         } else {
-            const token = await genToken(isEmail._id, '3m')
+            const token = await genToken(isEmail._id, '1d')
             const subject = 'ProgressPal - Link for Reset password'
             const link = `${req.protocol}://${req.get('host')}/progressPal/reset-password/${isEmail._id}/${token}`
             const html = await forgetPassEmail(link)
