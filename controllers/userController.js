@@ -47,7 +47,8 @@ const register = async (req, res)=>{
             const subject = 'ProgressPal - Kindly Verify your School Registration'
             // const link = `${req.protocol}://${req.get('host')}/progressPal/verify/${savedUser._id}/${token}`
             // const link = `https://progresspalproject.onrender.com/#/verified_success/${savedUser._id}/${token}`
-            const link = `${req.protocol}://${req.get('host')}/progressPal/verify/${token}`
+            // const link = `${req.protocol}://${req.get('host')}/progressPal/verify/${token}`
+            const link = `https://progresspalproject.onrender.com/#/verified_success/${token}`
             const html = await genEmailReg(link)
             emailSender({
                 email: schoolEmail,
@@ -162,7 +163,8 @@ const resendEmailVerification = async (req, res)=>{
                 // const link = `${req.protocol}://${req.get('host')}/progressPal/verify/${user._id}/${token}`
                 // const link = `https://progresspalproject.onrender.com/#/verified_success/${user._id}/${token}`
                 // const link = `https://progresspalproject.onrender.com/#/verified_success/${token}`
-                const link = `${req.protocol}://${req.get('host')}/progressPal/verify/${token}`
+                // const link = `${req.protocol}://${req.get('host')}/progressPal/verify/${token}`
+                const link = `https://progresspalproject.onrender.com/#/verified_success/${token}`
                 const html = await genEmailReg(link)
                 emailSender({
                     email: user.schoolEmail,
@@ -199,8 +201,8 @@ const logIn = async(req, res)=>{
                 const subject = 'ProgressPal - Kindly Verify your School Registration'
                 // const link = `${req.protocol}://${req.get('host')}/progressPal/verify/${user._id}/${token}`
                 // const link = `https://progresspalproject.onrender.com/#/verified_success/${user._id}/${token}`
-                // const link = `https://progresspalproject.onrender.com/#/verified_success/${token}`
-                const link = `${req.protocol}://${req.get('host')}/progressPal/verify/${token}`
+                const link = `https://progresspalproject.onrender.com/#/verified_success/${token}`
+                // const link = `${req.protocol}://${req.get('host')}/progressPal/verify/${token}`
                 const html = await genEmailReg(link)
                 emailSender({
                     email: user.schoolEmail,
@@ -331,8 +333,8 @@ const teacherLink = async (req, res)=>{
         const subject = 'ProgressPal - Teacher Registration'
         // const link = `${req.protocol}://${req.get('host')}/progressPal/newTeacher/${schoolId}/${token}`
         // const link = `https://progresspalproject.onrender.com/#/teacher_signup/schoolId/${token}`
-        // const link = `https://progresspalproject.onrender.com/#/teacher_signup/${token}`
-        const link = `${req.protocol}://${req.get('host')}/progressPal/newTeacher/${token}`
+        const link = `https://progresspalproject.onrender.com/#/teacher_signup/${token}`
+        // const link = `${req.protocol}://${req.get('host')}/progressPal/newTeacher/${token}`
         const html = await genTeacherEmail(link, schoolId)
         emailSender({
             email: teacherEmail,
