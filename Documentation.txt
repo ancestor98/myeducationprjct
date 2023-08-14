@@ -58,6 +58,18 @@ DATA NEEDED FOR STUDENT REGISTRATION
 
 
 
+DATA NEEDED FOR RESULTS
+{
+    subName1,
+    subTest1,
+    subExam1,
+    subTotal1,
+    resultTotal,
+    teachersRemark
+}
+
+
+
 ONBOARDING FOR SCHOOLS:
 Registration: https://progresspal-8rxj.onrender.com/progressPal/register                                // Post Method  DONE
 Verify Email: https://progresspal-8rxj.onrender.com/progressPal/verify/:schoolId/:token                       // Put Method   
@@ -125,7 +137,13 @@ Delete a Students: https://progresspal-8rxj.onrender.com/progressPal/deleteStude
 
 
 
-
+CRUD FOR RESULTS
+CREATE - https://progresspal-8rxj.onrender.com/progressPal/addResult/:studentId       //POST Method
+Read student all results - https://progresspal-8rxj.onrender.com/progressPal/studentResult/:studentId              // GET Method
+Read all Result - https://progresspal-8rxj.onrender.com/progressPal/allResults                  // GET Method
+Read One Result - https://progresspal-8rxj.onrender.com/progressPal/oneResult/:resultId         // GET METHOD
+Update a result - https://progresspal-8rxj.onrender.com/progressPal/updateResult/:resultId                  // PUT Method
+Delete a result - https://progresspal-8rxj.onrender.com/progressPal/deleteResult/:studentId/:resultId              // DELETE METHOD
 
 
 
