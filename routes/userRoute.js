@@ -3,19 +3,22 @@ const {
     userAuthSchool,
     isAdminAuthorizedSchool,
     isSuperAdminAuthorizedSchool,
-    loginAuthSchool
+    loginAuthSchool,
+    userAuth
 } = require('../middlewares/AuthandAuth/schoolAuthMiddleware')
 const {
     userAuthTeacher,
     isAdminAuthorizedTeacher,
     isSuperAdminAuthorizedTeacher,
-    loginAuthTeacher
+    loginAuthTeacher,
+    userAuthT
 } = require('../middlewares/AuthandAuth/teacherAuthMiddleware');
 const {
     userAuthStudent,
     isAdminAuthorizedStudent,
     isSuperAdminAuthorizedStudent,
-    loginAuthStudent
+    loginAuthStudent,
+    userAuthS
 } = require('../middlewares/AuthandAuth/studentAuthMiddleware')
 
 
@@ -106,43 +109,43 @@ const route = express.Router();
 
 // Route for Schools Admin Alone.
 route.post('/register', validateInputsMiddleware, register)
-route.put('/verify/:schoolId/:token', verifyEmail)
+route.put('/verify/:token', verifyEmail)
 route.put('/re-verify', verifyEmailVal, resendEmailVerification)
 route.post('/login', loginVal, logIn)
 route.post('/logout/:schoolId', loginAuthSchool, signOut)
-route.put("/changePassword/:schoolId", changePassVal, changePassword);
+route.put("/changePassword/:schoolId", userAuth, changePassVal, changePassword);
 route.post("/forgot-password", forgotPassVal, forgotPassword);
-route.put("/reset-password/:schoolId/:token", changePassVal, resetPassword);
-route.put('/updateSchool/:schoolId', updateUserInfoMiddleware, updateSchool)
-route.delete('/deleteSchool/:schoolId', deleteSchool)
-route.post('/teacherLink/:schoolId', teacherEmailVal, teacherLink)
-route.get('/readAllSchools', readAllSchools);
-route.get('/readOneSchool/:schoolId', readOneSchool);
+route.put("/reset-password/:token", changePassVal, resetPassword);
+route.put('/updateSchool/:schoolId', userAuth, updateUserInfoMiddleware, updateSchool)
+route.delete('/deleteSchool/:schoolId', userAuth, deleteSchool)
+route.post('/teacherLink/:schoolId', userAuth, teacherEmailVal, teacherLink)
+route.get('/readAllSchools', userAuth, readAllSchools);
+route.get('/readOneSchool/:schoolId', userAuth, readOneSchool);
 
 
 // Route for Teachers Alone.
-route.post('/newTeacher/:schoolId/:token', validateteacher, newTeacher)
+route.post('/newTeacher/:token', validateteacher, newTeacher)
 route.post('/loginTeacher', loginValTeacher, teacherLogin)
-route.post('/logoutTeacher/:teacherId', loginAuthTeacher, signOutTeacher)
-route.put("/changePasswordTeacher/:teacherId", changePassValTeacher, changePasswordTeacher);
+route.post('/logoutTeacher/:teacherId', userAuthT, signOutTeacher)
+route.put("/changePasswordTeacher/:teacherId", userAuthT, changePassValTeacher, changePasswordTeacher);
 route.post("/forgot-passwordTeacher", forgotPassValTeacher, forgotPasswordTeacher);
-route.put("/reset-passwordTeacher/:teacherId/:token", changePassValTeacher, resetPasswordTeacher);
-route.put('/updateTeacher/:teacherId', updateTeacherInfoMiddleware, updateSchoolTeacher)
-route.delete('/deleteTeacher/:teacherId', deleteSchoolTeacher)
-route.get('/readAllTeachers', readAllTeachers);
-route.get('/readOneTeacher/:teacherId', readOneTeacher);
+route.put("/reset-passwordTeacher/:token", changePassValTeacher, resetPasswordTeacher);
+route.put('/updateTeacher/:teacherId', userAuthT, updateTeacherInfoMiddleware, updateSchoolTeacher)
+route.delete('/deleteTeacher/:teacherId', userAuthT, deleteSchoolTeacher)
+route.get('/readAllTeachers', userAuthT, readAllTeachers);
+route.get('/readOneTeacher/:teacherId', userAuthT,  readOneTeacher);
 
 
 
 // Route for Students Alone.
-route.post('/newStudent/:teacherId', validateStudent, newStudent)
+route.post('/newStudent/:teacherId', userAuthT, validateStudent, newStudent)
 route.post('/loginStudent', loginValStudent, studentLogin)
-route.post('/logoutStudent/:studentId', loginAuthStudent, signOutStudent)
-route.put("/changePasswordStudent/:studentId", changePassValStudent, changePasswordStudent);
+route.post('/logoutStudent/:studentId', userAuthS, loginAuthStudent, signOutStudent)
+route.put("/changePasswordStudent/:studentId", userAuthS, changePassValStudent, changePasswordStudent);
 route.post("/forgot-passwordStudent", forgotPasswordStudent);
 route.put("/reset-passwordStudent/:studentId/:token", changePassValStudent, resetPasswordStudent);
-route.put('/updateStudent/:studentId', updateStudentInfoMiddleware, updateSchoolStudent);
-route.delete('/deleteStudent/:studentId', deleteSchoolStudent);
+route.put('/updateStudent/:studentId', userAuthS, updateStudentInfoMiddleware, updateSchoolStudent);
+route.delete('/deleteStudent/:studentId', userAuthS, deleteSchoolStudent);
 route.get('/readAllStudent', readAllStudent);
 route.get('/readOneStudent/:studentId', readOneStudent);
 

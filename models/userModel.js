@@ -59,9 +59,9 @@ const userSchema = new mongoose.Schema({
         type: Boolean,
         default: false
     },
-    token: {
-        type: String
-    },
+    // token: {
+    //     type: String
+    // },
     islogin: {
         type: Boolean,
         default: false

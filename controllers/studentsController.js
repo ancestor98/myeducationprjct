@@ -6,7 +6,7 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken')
 const fs = require('fs');
 const cloudinary = require('../utilities/cloudinary');
-const { genToken, decodeToken } = require('../utilities/jwt');
+const { genToken, decodeToken, decodeTokenT } = require('../utilities/jwt');
 const emailSender = require('../middlewares/email');
 const { forgetPassEmail } = require('../utilities/studentEmail/forgetpassword')
 const { genEmailReg } = require('../utilities/studentEmail/register')
@@ -28,6 +28,7 @@ const newStudent = async (req, res) => {
         const { teacherId } = req.params;
         
         const teacher = await teacherModel.findById(teacherId);
+        // const teacher = await decodeTokenT(token);
         
         if (!teacher) {
             return res.status(404).json({ message: 'Teacher not found' });
@@ -51,7 +52,7 @@ const newStudent = async (req, res) => {
         }
 
         const student = new studentModel(data);
-        const tokens = await genTokensignUpS(student);
+        const tokens = await genToken(student, '1d');
         student.token = tokens;
         student.link = teacher;
 
@@ -103,7 +104,7 @@ const studentLogin = async (req, res)=>{
                 })
             } else {
                 // const token = await genToken(user._id, '30m');
-                const token = await genTokenLoginS(user)
+                const token = await genToken(user, '1d')
                 res.status(200).json({
                     message: 'Log in Successful',
                     data: islogin,

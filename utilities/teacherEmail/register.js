@@ -4,7 +4,7 @@
 
 
 // This function generates the email template with a dynamic link
-function genEmailReg(link) {
+function genEmailReg(link, savedTeacher) {
     return `
     <!DOCTYPE html>
   <html lang="en">

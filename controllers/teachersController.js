@@ -5,7 +5,7 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken')
 const fs = require('fs');
 const cloudinary = require('../utilities/cloudinary');
-const { genToken, decodeToken } = require('../utilities/jwt');
+const { genToken, decodeToken, decodeTokenT } = require('../utilities/jwt');
 const emailSender = require('../middlewares/email');
 const { genEmailReg } = require('../utilities/teacherEmail/register')
 const { forgetPassEmail } = require('../utilities/teacherEmail/forgetpassword')
@@ -14,70 +14,80 @@ const { genTokenLoginT, genTokensignUpT } = require('../middlewares/AuthandAuth/
 
 
 
+
+
+
+
+
+
+
+
+
 const newTeacher = async (req, res) => {
     try {
-        const { token, schoolId } = req.params;
+        const { token } = req.params;
 
-        jwt.verify(token, process.env.JWT_SECRET, async (err) => {
-            if (err) {
-                return res.status(400).json({
-                    message: 'This link is Expired. Please, Inform your School Administrator to send you another registration Link.'
-                });
-            } else {
-                const school = await userModel.findById(schoolId);
+        try {
+            await jwt.verify(token, process.env.JWT_SECRET);
+        } catch (err) {
+            return res.status(400).json({
+                message: 'This link is Expired. Please, Inform your School Administrator to send you another registration Link.'
+            });
+        }
 
-                const {
-                    teacherName,
-                    teacherClass,
-                    teacherAge,
-                    teacherEmail,
-                    password,
-                    confirmPassword
-                } = req.body;
+        const school = await decodeToken(token);
 
-                const salt = await bcrypt.genSalt(10);
-                const hashConfirmPassword = await bcrypt.hash(confirmPassword, salt);
-                const hashPassword = await bcrypt.hash(password, salt);
+        const {
+            teacherName,
+            teacherClass,
+            teacherAge,
+            teacherEmail,
+            password,
+            confirmPassword
+        } = req.body;
 
-                const data = {
-                    teacherName: teacherName.toUpperCase(),
-                    teacherClass,
-                    teacherAge,
-                    teacherEmail: teacherEmail.toLowerCase(),
-                    password: hashPassword,
-                    confirmPassword: hashConfirmPassword
-                };
+        const salt = await bcrypt.genSalt(10);
+        const hashConfirmPassword = await bcrypt.hash(confirmPassword, salt);
+        const hashPassword = await bcrypt.hash(password, salt);
 
-                if (req.files) {
-                    const teacherImage = req.files.teacherImage.tempFilePath;
-                    const uploadImage = await cloudinary.uploader.upload(teacherImage);
-                    data.teacherImage = uploadImage.secure_url;
-                }
+        const data = {
+            teacherName: teacherName.toUpperCase(),
+            teacherClass,
+            teacherAge,
+            teacherEmail: teacherEmail.toLowerCase(),
+            password: hashPassword,
+            confirmPassword: hashConfirmPassword
+        };
 
-                const teacher = new teacherModel(data);
-                const tokens = await genTokensignUpT(teacher);
-                teacher.token = tokens;
-                teacher.link = school;
-                await teacher.save();
+        if (req.files) {
+            const teacherImage = req.files.teacherImage.tempFilePath;
+            const uploadImage = await cloudinary.uploader.upload(teacherImage);
+            data.teacherImage = uploadImage.secure_url;
+        }
 
-                school.teachers.push(teacher);
-                await school.save();
+        const teacher = new teacherModel(data);
+        const tokens = await genToken(teacher, '1d');
+        // teacher.token = tokens;
+        teacher.link = school;
+        const savedTeacher = await teacher.save();
 
-                const subject = 'ProgressPal - welcome!';
-                const link = 'https://progresspal-8rxj.onrender.com';
-                const html = await genEmailReg(link);
+        school.teachers.push(teacher);
+        await school.save();
 
-                emailSender({
-                    email: teacherEmail,
-                    subject,
-                    html
-                });
+        const subject = 'ProgressPal - welcome!';
+        const link = 'https://progresspal-8rxj.onrender.com';
+        const html = await genEmailReg(link, savedTeacher);
 
-                res.status(200).json({
-                    message: 'Teacher saved successfully',
-                    teacher
-                });
-            }
+        emailSender({
+            email: teacherEmail,
+            subject,
+            html
+        });
+
+        res.status(200).json({
+            message: 'Teacher saved successfully',
+            teacher: savedTeacher,
+            tokens
         });
     } catch (error) {
         res.status(500).json({
@@ -85,6 +95,21 @@ const newTeacher = async (req, res) => {
         });
     }
 };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -106,8 +131,8 @@ const teacherLogin = async (req, res)=>{
                     message: 'Incorrect Password'
                 })
             } else {
-                // const token = await genToken(user._id, '30m');
-                const token = await genTokenLoginT(user)
+                const token = await genToken(user._id, '1d');
+                // const token = await genTokenLoginT(user)
                 res.status(200).json({
                     message: 'Log in Successful',
                     data: islogin,
@@ -164,7 +189,8 @@ const forgotPasswordTeacher = async (req, res)=>{
         } else {
             const token = await genToken(isEmail._id, '1d')
             const subject = 'ProgressPal - Link for Reset password'
-            const link = `${req.protocol}://${req.get('host')}/progressPal/reset-passwordTeacher/${isEmail._id}/${token}`
+            // const link = `${req.protocol}://${req.get('host')}/progressPal/reset-passwordTeacher/${isEmail._id}/${token}`
+            const link = `${req.protocol}://${req.get('host')}/progressPal/reset-passwordTeacher/${token}`
             // const message = `Forgot your Password? it's okay, kindly use this link ${link} to re-set your account password. Please note that this link will expire after 5(five) Minutes.`
             const html = await forgetPassEmail(link)
             emailSender({
@@ -188,14 +214,14 @@ const forgotPasswordTeacher = async (req, res)=>{
 const resetPasswordTeacher = async (req, res)=>{
     try {
         const { token } = req.params;
-        const { teacherId } = req.params;
+        // const { teacherId } = req.params;
         const { password } = req.body;
         const salt = bcrypt.genSaltSync(10);
         const hash = bcrypt.hashSync(password, salt);
-        const userInfo = await decodeToken(token);
+        const userInfo = await decodeTokenT(token);
         // console.log(userInfo);
-        const user = await teacherModel.findByIdAndUpdate(teacherId, { password: hash }, { new: true });
-        const userConfirm = await teacherModel.findByIdAndUpdate(teacherId, { confirmPassword: hash }, { new: true });
+        const user = await teacherModel.findByIdAndUpdate(userInfo, { password: hash }, { new: true });
+        const userConfirm = await teacherModel.findByIdAndUpdate(userInfo, { confirmPassword: hash }, { new: true });
         if (!user) {
             res.status(400).json({
                 message: 'Could not Reset Password'
@@ -327,7 +353,7 @@ const signOutTeacher = async (req, res)=>{
         res.status(200).json({
             message: 'Logged out successfully'
         })
-        console.log()
+        // console.log()
     } catch (error) {
         res.status(500).json({
             message: error.message

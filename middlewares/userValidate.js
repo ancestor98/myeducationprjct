@@ -273,7 +273,7 @@ const loginVal = async (req, res, next)=>{
     } else {
         const isEmail = await userModel.findOne({ schoolEmail });
         if (!isEmail) {
-            res.status(400).json({
+            return res.status(400).json({
                 message: `School with email: ${schoolEmail}, doesn't exist. Do well to register with us. Try Again later.`
             })
         } else {
@@ -283,10 +283,11 @@ const loginVal = async (req, res, next)=>{
 };
 
 
-const changePassVal = async (req, res, schoolId, next)=>{
+const changePassVal = async (req, res, next)=>{
     const {
         password
     } = req.body;
+    const { schoolId } = req.params;
     if (!password) {
         return res.status(400).json({message: "Password is required."});
     } else if (password.length < 4) {
@@ -296,7 +297,7 @@ const changePassVal = async (req, res, schoolId, next)=>{
     } else {
         const isUser = await userModel.findById(schoolId);
         if (!isUser) {
-            res.status(400).json({
+            return res.status(400).json({
                 message: `You are not a user on this Platform. Do well to register with us. Try Again later.`
             })
         } else {

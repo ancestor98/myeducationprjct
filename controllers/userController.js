@@ -40,13 +40,14 @@ const register = async (req, res)=>{
                 confirmPassword: hashConfirmPassword
             }
             const user = new userModel(data);
-            const tokens = await genTokensignUp(user)
-            user.token = tokens;
+            // const tokens = await genTokensignUp(user)
+            // user.token = tokens;
             const savedUser = await user.save();
             const token = await genToken(savedUser._id, '1d');
             const subject = 'ProgressPal - Kindly Verify your School Registration'
             // const link = `${req.protocol}://${req.get('host')}/progressPal/verify/${savedUser._id}/${token}`
-            const link = `https://progresspalproject.onrender.com/#/verified_success/${savedUser._id}/${token}`
+            // const link = `https://progresspalproject.onrender.com/#/verified_success/${savedUser._id}/${token}`
+            const link = `${req.protocol}://${req.get('host')}/progressPal/verify/${token}`
             const html = await genEmailReg(link)
             emailSender({
                 email: schoolEmail,
@@ -60,7 +61,8 @@ const register = async (req, res)=>{
             } else {
                 res.status(201).json({
                     message: `${schoolName} has been successfully registered. Check your School Email to verify your account.`,
-                    user: savedUser
+                    user: savedUser,
+                    token: token
                 })
             }
         } else {
@@ -73,13 +75,15 @@ const register = async (req, res)=>{
             user.password = hashPassword
             user.confirmPassword = hashConfirmPassword
             
-            const tokens = await genTokensignUp(user)
-            user.token = tokens;
+            // const tokens = await genTokensignUp(user)
+            // user.token = tokens;
             const savedUser = await user.save();
             const token = await genToken(savedUser._id, '1d');
             const subject = 'ProgressPal - Kindly Verify your School Registration'
             // const link = `${req.protocol}://${req.get('host')}/progressPal/verify/${savedUser._id}/${token}`
-            const link = `https://progresspalproject.onrender.com/#/verified_success/${savedUser._id}/${token}`
+            // const link = `https://progresspalproject.onrender.com/#/verified_success/${savedUser._id}/${token}`
+            // const link = `https://progresspalproject.onrender.com/#/verified_success/${token}`
+            const link = `${req.protocol}://${req.get('host')}/progressPal/verify/${token}`
             const html = await genEmailReg(link)
             emailSender({
                 email: schoolEmail,
@@ -93,7 +97,8 @@ const register = async (req, res)=>{
             } else {
                 res.status(201).json({
                     message: `${schoolName} has been successfully registered. Check your School Email to verify your account.`,
-                    user: savedUser
+                    user: savedUser,
+                    token: token
                 })
             }
         }
@@ -111,25 +116,23 @@ const register = async (req, res)=>{
 const verifyEmail = async (req, res)=>{
     try {
         const { token } = req.params;
-        const { schoolId } = req.params;
-        await jwt.verify(token, process.env.JWT_SECRET, async (err)=>{
-            if(err) {
-                res.status(400).json({
-                    message: 'This link is Expired. Send another Email Verification.'
+        // const { schoolId } = req.params;
+
+        const userInfo = await decodeToken(token);
+        if (!userInfo) {
+            throw new Error("error verifying user, try again");
+        } else {
+            const verify = await userModel.findByIdAndUpdate(userInfo._id, {isVerified: true});
+            if (!verify) {
+                res.status(403).json({
+                    message: 'User not verified, please try again.'
                 })
             } else {
-                const verify = await userModel.findByIdAndUpdate(schoolId, {isVerified: true});
-                if (!verify) {
-                    res.status(403).json({
-                        message: 'User not verified, please try again.'
-                    })
-                } else {
-                    res.status(200).json({
-                        messge: `School with Email: ${verify.schoolEmail} verified successfully`
-                    })
-                }
+                res.status(200).json({
+                    messge: `School with Email: ${verify.schoolEmail} verified successfully`
+                })
             }
-        })
+        }
     } catch (error) {
         res.status(500).json({
             message: error.message
@@ -146,7 +149,7 @@ const resendEmailVerification = async (req, res)=>{
         const user = await userModel.findOne({schoolEmail});
         if (!user) {
             res.status(404).json({
-                message: 'User not found'
+                message: 'School with email not found'
             })
         } else {
             if (user.isVerified == true) {
@@ -157,7 +160,9 @@ const resendEmailVerification = async (req, res)=>{
                 const token = await genToken(user._id, '1d')
                 const subject = 'ProgressPal - Kindly Verify your School Registration'
                 // const link = `${req.protocol}://${req.get('host')}/progressPal/verify/${user._id}/${token}`
-                const link = `https://progresspalproject.onrender.com/#/verified_success/${user._id}/${token}`
+                // const link = `https://progresspalproject.onrender.com/#/verified_success/${user._id}/${token}`
+                // const link = `https://progresspalproject.onrender.com/#/verified_success/${token}`
+                const link = `${req.protocol}://${req.get('host')}/progressPal/verify/${token}`
                 const html = await genEmailReg(link)
                 emailSender({
                     email: user.schoolEmail,
@@ -165,7 +170,7 @@ const resendEmailVerification = async (req, res)=>{
                     html
                 })
                 res.status(201).json({
-                    message: `${user.schoolName} has been successfully registered. Check your School Email to verify your account.`,
+                    message: `Verificaton email sent. Check your school email to verify your account.`,
                     user: user
                 })
             }
@@ -193,7 +198,9 @@ const logIn = async(req, res)=>{
                 const token = await genToken(user._id, '1d');
                 const subject = 'ProgressPal - Kindly Verify your School Registration'
                 // const link = `${req.protocol}://${req.get('host')}/progressPal/verify/${user._id}/${token}`
-                const link = `https://progresspalproject.onrender.com/#/verified_success/${user._id}/${token}`
+                // const link = `https://progresspalproject.onrender.com/#/verified_success/${user._id}/${token}`
+                // const link = `https://progresspalproject.onrender.com/#/verified_success/${token}`
+                const link = `${req.protocol}://${req.get('host')}/progressPal/verify/${token}`
                 const html = await genEmailReg(link)
                 emailSender({
                     email: user.schoolEmail,
@@ -206,12 +213,12 @@ const logIn = async(req, res)=>{
             } else {
                 const isPassword = await bcrypt.compare(password, user.confirmPassword);
                 const islogin = await userModel.findByIdAndUpdate(user._id, {islogin: true});
+                const token = await genToken(user._id, '1d');
                 if(!isPassword) {
                     res.status(400).json({
                         message: 'Incorrect Password'
                     });
                 } else {
-                    const token = await genTokenLogin(user)
                     res.status(200).json({
                         message: 'Log in Successful',
                         data: islogin,
@@ -267,7 +274,7 @@ const forgotPassword = async (req, res)=>{
         } else {
             const token = await genToken(isEmail._id, '1d')
             const subject = 'ProgressPal - Link for Reset password'
-            const link = `${req.protocol}://${req.get('host')}/progressPal/reset-password/${isEmail._id}/${token}`
+            const link = `${req.protocol}://${req.get('host')}/progressPal/reset-password/${token}`
             const html = await forgetPassEmail(link)
             emailSender({
                 email: schoolEmail,
@@ -323,7 +330,9 @@ const teacherLink = async (req, res)=>{
         // console.log(token);
         const subject = 'ProgressPal - Teacher Registration'
         // const link = `${req.protocol}://${req.get('host')}/progressPal/newTeacher/${schoolId}/${token}`
-        const link = `https://progresspalproject.onrender.com/#/teacher_signup/schoolId/${token}`
+        // const link = `https://progresspalproject.onrender.com/#/teacher_signup/schoolId/${token}`
+        // const link = `https://progresspalproject.onrender.com/#/teacher_signup/${token}`
+        const link = `${req.protocol}://${req.get('host')}/progressPal/newTeacher/${token}`
         const html = await genTeacherEmail(link, schoolId)
         emailSender({
             email: teacherEmail,

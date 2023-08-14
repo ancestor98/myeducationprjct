@@ -57,12 +57,18 @@ const validateStudent = async (req, res, next)=>{
         if (!password) {
             return res.status(400).json({ message: `Password of Teacher must be filled.` });
         }
-        if (password.length < 5) {
-            return res.status(400).json({ message: `Please pass a correct password.` });
+        if (password.length < 4) {
+            return res.status(400).json({ message: `Student's Pin Number must be 4 digits.` });
         }
-        if (!/(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}/.test(password)) {
-            return res.status(400).json({ message: `Password must have at least 8 characters, including one uppercase, one lowercase, and one digit.` });
+        if (password.length > 4) {
+            return res.status(400).json({ message: `Student's Pin Number must be 4 digits.` });
         }
+        if (!/^\d{4}$/.test(password)) {
+            return res.status(400).json({ message: `Student's Pin Number must be four(4) digits.` });
+        }
+        // if (!/(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}/.test(password)) {
+        //     return res.status(400).json({ message: `Password must have at least 8 characters, including one uppercase, one lowercase, and one digit.` });
+        // }
 
 
 
@@ -202,10 +208,10 @@ const loginValStudent = async (req, res, next)=>{
         return res.status(400).json({message: "Password is required."});
     }  else if (password.length < 4) {
         return res.status(400).json({message: "Password must have at least 4 characters."});
-    } else if (!/(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}/.test(password)) {
-        return res.status(400).json({message: "Password must have at least 8 characters, including one uppercase, one lowercase, and one digit."});
+    } else if (!/^\d{4}$/.test(password)) {
+        return res.status(400).json({message: "Password must four(4) digits."});
     } else {
-        const isEmail = await teacherModel.findOne({ studentEmail });
+        const isEmail = await studentModel.findOne({ studentEmail });
         if (!isEmail) {
             res.status(400).json({
                 message: `Student with email: ${studentEmail}, doesn't exist. Do well to register with us. Try Again later.`
@@ -218,10 +224,11 @@ const loginValStudent = async (req, res, next)=>{
 
 
 
-const changePassValStudent = async (req, res, studentId, next)=>{
+const changePassValStudent = async (req, res, next)=>{
     const {
         password
     } = req.body;
+    const { studentId } = req.params;
     if (!password) {
         return res.status(400).json({message: "Password is required."});
     } else if (password.length < 4) {

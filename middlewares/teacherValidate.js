@@ -223,10 +223,11 @@ const loginValTeacher = async (req, res, next)=>{
 
 
 
-const changePassValTeacher = async (req, res, teacherId, next)=>{
+const changePassValTeacher = async (req, res, next)=>{
     const {
         password
     } = req.body;
+    const { teacherId } = req.params;
     if (!password) {
         return res.status(400).json({message: "Password is required."});
     } else if (password.length < 4) {
