@@ -1,25 +1,9 @@
 // Importing my AuthMiddlwares.
 const {
-    userAuthSchool,
-    isAdminAuthorizedSchool,
-    isSuperAdminAuthorizedSchool,
-    loginAuthSchool,
-    userAuth
-} = require('../middlewares/AuthandAuth/schoolAuthMiddleware')
-const {
-    userAuthTeacher,
-    isAdminAuthorizedTeacher,
-    isSuperAdminAuthorizedTeacher,
-    loginAuthTeacher,
-    userAuthT
-} = require('../middlewares/AuthandAuth/teacherAuthMiddleware');
-const {
-    userAuthStudent,
-    isAdminAuthorizedStudent,
-    isSuperAdminAuthorizedStudent,
-    loginAuthStudent,
+    userAuth,
+    userAuthT,
     userAuthS
-} = require('../middlewares/AuthandAuth/studentAuthMiddleware')
+} = require('../middlewares/AuthandAuth/schoolAuthMiddleware')
 
 
 // Importing my Validators
@@ -112,7 +96,7 @@ route.post('/register', validateInputsMiddleware, register)
 route.put('/verify/:token', verifyEmail)
 route.put('/re-verify', verifyEmailVal, resendEmailVerification)
 route.post('/login/schoolAdmin', loginVal, logIn)
-route.post('/logout/:schoolId', loginAuthSchool, signOut)
+route.post('/logout/:schoolId', userAuth, signOut)
 route.put("/changePassword/:schoolId", userAuth, changePassVal, changePassword);
 route.post("/forgot-password", forgotPassVal, forgotPassword);
 route.put("/reset-password/:token", changePassVal, resetPassword);
@@ -140,7 +124,7 @@ route.get('/readOneTeacher/:teacherId', userAuthT,  readOneTeacher);
 // Route for Students Alone.
 route.post('/newStudent/:teacherId', userAuthT, validateStudent, newStudent)
 route.post('/login/student', loginValStudent, studentLogin)
-route.post('/logoutStudent/:studentId', userAuthS, loginAuthStudent, signOutStudent)
+route.post('/logoutStudent/:studentId', userAuthS, signOutStudent)
 route.put("/changePasswordStudent/:studentId", userAuthS, changePassValStudent, changePasswordStudent);
 route.post("/forgot-passwordStudent", forgotPasswordStudent);
 route.put("/reset-passwordStudent/:studentId/:token", changePassValStudent, resetPasswordStudent);
