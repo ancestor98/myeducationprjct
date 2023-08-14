@@ -111,7 +111,7 @@ const route = express.Router();
 route.post('/register', validateInputsMiddleware, register)
 route.put('/verify/:token', verifyEmail)
 route.put('/re-verify', verifyEmailVal, resendEmailVerification)
-route.post('/login', loginVal, logIn)
+route.post('/login/schoolAdmin', loginVal, logIn)
 route.post('/logout/:schoolId', loginAuthSchool, signOut)
 route.put("/changePassword/:schoolId", userAuth, changePassVal, changePassword);
 route.post("/forgot-password", forgotPassVal, forgotPassword);
@@ -125,7 +125,7 @@ route.get('/readOneSchool/:schoolId', userAuth, readOneSchool);
 
 // Route for Teachers Alone.
 route.post('/newTeacher/:token', validateteacher, newTeacher)
-route.post('/loginTeacher', loginValTeacher, teacherLogin)
+route.post('/login/teacher', loginValTeacher, teacherLogin)
 route.post('/logoutTeacher/:teacherId', userAuthT, signOutTeacher)
 route.put("/changePasswordTeacher/:teacherId", userAuthT, changePassValTeacher, changePasswordTeacher);
 route.post("/forgot-passwordTeacher", forgotPassValTeacher, forgotPasswordTeacher);
@@ -139,7 +139,7 @@ route.get('/readOneTeacher/:teacherId', userAuthT,  readOneTeacher);
 
 // Route for Students Alone.
 route.post('/newStudent/:teacherId', userAuthT, validateStudent, newStudent)
-route.post('/loginStudent', loginValStudent, studentLogin)
+route.post('/login/student', loginValStudent, studentLogin)
 route.post('/logoutStudent/:studentId', userAuthS, loginAuthStudent, signOutStudent)
 route.put("/changePasswordStudent/:studentId", userAuthS, changePassValStudent, changePasswordStudent);
 route.post("/forgot-passwordStudent", forgotPasswordStudent);
