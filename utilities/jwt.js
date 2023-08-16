@@ -43,10 +43,10 @@ const decodeTokenT = async (token)=>{
     let user = null;
     await jwt.verify(token, process.env.JWT_SECRET, async (err, data)=>{
         if(err) {
-            // throw err;
-            return res.status(200).json({
-                message: 'Token Expired, Please try again'
-            });
+            throw err;
+            // return res.status(200).json({
+            //     message: 'Token Expired, Please try again'
+            // });
         } else {
             user = await teacherModel.findById(data.userID);
         }
