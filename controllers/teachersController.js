@@ -28,7 +28,7 @@ const newTeacher = async (req, res) => {
         const { token } = req.params;
 
         try {
-            await jwt.verify(token, process.env.JWT_SECRET);
+            jwt.verify(token, process.env.JWT_SECRET);
         } catch (err) {
             return res.status(400).json({
                 message: 'This link is Expired. Please, Inform your School Administrator to send you another registration Link.'
