@@ -62,7 +62,7 @@ const userSchema = new mongoose.Schema({
     // token: {
     //     type: String
     // },
-    islogin: {
+    isLogin: {
         type: Boolean,
         default: false
     },

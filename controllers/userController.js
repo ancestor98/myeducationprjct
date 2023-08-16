@@ -214,7 +214,7 @@ const logIn = async(req, res)=>{
                 })
             } else {
                 const isPassword = await bcrypt.compare(password, user.confirmPassword);
-                const islogin = await userModel.findByIdAndUpdate(user._id, {islogin: true});
+                const islogin = await userModel.findByIdAndUpdate(user._id, {isLogin: true});
                 const token = await genToken(user._id, '1d');
                 if(!isPassword) {
                     res.status(400).json({

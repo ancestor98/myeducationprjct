@@ -14,10 +14,11 @@ const userAuth = async (req, res, next) => {
         const hasAuthorization = req.headers.authorization;
         const token = hasAuthorization.split(" ")[1];
   
-        const user = await decodeToken(token);
-        req.user = user;
+        // const user = await decodeToken(token);
+        // req.user = user;
         // console.log(req.user);
-        if (req.user.islogin == true) {
+        // if (req.user.isLogin == true) {
+        if (hasAuthorization) {
           next();
         } else {
           res.status(401).json({
