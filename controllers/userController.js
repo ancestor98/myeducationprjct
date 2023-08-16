@@ -533,7 +533,7 @@ const signOut = async (req, res)=>{
         const hasAuthorization = req.headers.authorization;
         const token = hasAuthorization.split(" ")[1];
         blacklist.push(token);
-        const logout = await userModel.findByIdAndUpdate(schoolId, {islogin: false}); 
+        const logout = await userModel.findByIdAndUpdate(schoolId, {isLogin: false}); 
         res.status(200).json({
             message: 'Logged out successfully'
         })
