@@ -72,7 +72,7 @@ DATA NEEDED FOR RESULTS
 
 ONBOARDING FOR SCHOOLS:
 Registration: https://progresspal-8rxj.onrender.com/progressPal/register                                // Post Method  DONE
-Verify Email: https://progresspal-8rxj.onrender.com/progressPal/verify/:schoolId/:token                       // Put Method   
+Verify Email: https://progresspal-8rxj.onrender.com/progressPal/verify/:token                       // Put Method   
 Re-send Email Verification: https://progresspal-8rxj.onrender.com/progressPal/re-verify                 // Put Method
 Login: https://progresspal-8rxj.onrender.com/progressPal/login                                          // Post Method  DONE
 signOut: https://progresspal-8rxj.onrender.com/progressPal/logout/:schoolId                                   // Post Method

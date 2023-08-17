@@ -329,10 +329,11 @@ const deleteSchoolStudent = async (req, res)=>{
 const signOutStudent = async (req, res)=>{
     try {
         const { studentId } = req.params;
-        const blacklist = [];
-        const hasAuthorization = req.headers.authorization;
-        const token = hasAuthorization.split(" ")[1];
-        blacklist.push(token); 
+        // const blacklist = [];
+        // const hasAuthorization = req.headers.authorization;
+        // const token = hasAuthorization.split(" ")[1];
+        // blacklist.push(token); 
+        // blacklist.push(hasAuthorization); 
         const logout = await studentModel.findByIdAndUpdate(studentId, {islogin: false}); 
         res.status(200).json({
             message: 'Logged out successfully'
