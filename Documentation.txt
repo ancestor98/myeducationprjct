@@ -78,19 +78,19 @@ Login: https://progresspal-8rxj.onrender.com/progressPal/login                  
 signOut: https://progresspal-8rxj.onrender.com/progressPal/logout/:schoolId                                   // Post Method
 Change Password: https://progresspal-8rxj.onrender.com/progressPal/changePassword/:schoolId                   // Put Method
 Forgot Password: https://progresspal-8rxj.onrender.com/progressPal/forgot-password                      // Post Method
-Reset Password: https://progresspal-8rxj.onrender.com/progressPal/reset-password/:schoolId/:token             // Put Method
+Reset Password: https://progresspal-8rxj.onrender.com/progressPal/reset-password/:token             // Put Method
 Teacher Link: https://progresspal-8rxj.onrender.com/progressPal/teacherLink/:schoolId                         // Post Method
 
 At this point of registration for teachers: The school's ID and TOKEN should be caught dynamically from the route, at the submit button.
 
 ONBOARDING FOR TEACHERS:
-Registration: https://progresspal-8rxj.onrender.com/progressPal/newTeacher/:schoolId/:token                       // Post Method
+Registration: https://progresspal-8rxj.onrender.com/progressPal/newTeacher/:token                       // Post Method
 // token parse from email to params.
 Login: https://progresspal-8rxj.onrender.com/progressPal/loginTeacher                                       // Post Method
 signOut: https://progresspal-8rxj.onrender.com/progressPal/logoutTeacher/:teacherId                                // Post Method
 Change Password: https://progresspal-8rxj.onrender.com/progressPal/changePasswordTeacher/:teacherId                // Put Method
 Forgot Password: https://progresspal-8rxj.onrender.com/progressPal/forgot-passwordTeacher                   // Post Method
-Reset Password: https://progresspal-8rxj.onrender.com/progressPal/reset-passwordTeacher/:teacherId/:token          // Put Method
+Reset Password: https://progresspal-8rxj.onrender.com/progressPal/reset-passwordTeacher/:token          // Put Method
 
 
 
