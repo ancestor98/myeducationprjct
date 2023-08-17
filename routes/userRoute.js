@@ -96,7 +96,7 @@ route.post('/register', validateInputsMiddleware, register)
 route.put('/verify/:token', verifyEmail)
 route.put('/re-verify', verifyEmailVal, resendEmailVerification)
 route.post('/login/schoolAdmin', loginVal, logIn)
-route.post('/logout/:schoolId', userAuth, signOut)
+route.post('/logout/:schoolId', signOut)
 route.put("/changePassword/:schoolId", userAuth, changePassVal, changePassword);
 route.post("/forgot-password", forgotPassVal, forgotPassword);
 route.put("/reset-password/:token", changePassVal, resetPassword);
@@ -110,7 +110,7 @@ route.get('/readOneSchool/:schoolId', userAuth, readOneSchool);
 // Route for Teachers Alone.
 route.post('/newTeacher/:token', validateteacher, newTeacher)
 route.post('/login/teacher', loginValTeacher, teacherLogin)
-route.post('/logoutTeacher/:teacherId', userAuthT, signOutTeacher)
+route.post('/logoutTeacher/:teacherId', signOutTeacher)
 route.put("/changePasswordTeacher/:teacherId", userAuthT, changePassValTeacher, changePasswordTeacher);
 route.post("/forgot-passwordTeacher", forgotPassValTeacher, forgotPasswordTeacher);
 route.put("/reset-passwordTeacher/:token", changePassValTeacher, resetPasswordTeacher);
@@ -124,7 +124,7 @@ route.get('/readOneTeacher/:teacherId', userAuthT,  readOneTeacher);
 // Route for Students Alone.
 route.post('/newStudent/:teacherId', userAuthT, validateStudent, newStudent)
 route.post('/login/student', loginValStudent, studentLogin)
-route.post('/logoutStudent/:studentId', userAuthS, signOutStudent)
+route.post('/logoutStudent/:studentId', signOutStudent)
 route.put("/changePasswordStudent/:studentId", userAuthS, changePassValStudent, changePasswordStudent);
 route.post("/forgot-passwordStudent", forgotPasswordStudent);
 route.put("/reset-passwordStudent/:studentId/:token", changePassValStudent, resetPasswordStudent);
