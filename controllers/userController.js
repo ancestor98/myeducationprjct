@@ -530,7 +530,7 @@ const readOneSchool = async (req, res)=>{
 const signOut = async (req, res)=>{
     try {
         const { schoolId } = req.params;
-        const blacklist = [];
+        // const blacklist = [];
         // const hasAuthorization = req.headers.authorization;
         // const token = hasAuthorization.split(" ")[1];
         // blacklist.push(token);
