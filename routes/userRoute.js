@@ -103,8 +103,8 @@ route.put("/reset-password/:token", changePassVal, resetPassword);
 route.put('/updateSchool/:schoolId', userAuth, updateUserInfoMiddleware, updateSchool)
 route.delete('/deleteSchool/:schoolId', userAuth, deleteSchool)
 route.post('/teacherLink/:schoolId', userAuth, teacherEmailVal, teacherLink)
-route.get('/readAllSchools', userAuth, readAllSchools);
-route.get('/readOneSchool/:schoolId', userAuth, readOneSchool);
+route.get('/readAllSchools', readAllSchools);
+route.get('/readOneSchool/:schoolId', readOneSchool);
 
 
 // Route for Teachers Alone.
