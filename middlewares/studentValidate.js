@@ -208,9 +208,7 @@ const loginValStudent = async (req, res, next)=>{
         return res.status(400).json({message: "Password is required."});
     }  else if (password.length < 4) {
         return res.status(400).json({message: "Password must have at least 4 characters."});
-    } else if (!/^\d{4}$/.test(password)) {
-        return res.status(400).json({message: "Password must four(4) digits."});
-    } else {
+    }  else {
         const isEmail = await studentModel.findOne({ studentEmail });
         if (!isEmail) {
             res.status(400).json({
