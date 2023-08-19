@@ -28,7 +28,7 @@ const decodeToken = async (token)=>{
             });
         } else {
             user = await userModel.findById(data.userID);
-            console.log(data);
+            // console.log(user);
         }
     })
     return user

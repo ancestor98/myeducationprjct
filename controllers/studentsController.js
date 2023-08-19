@@ -28,7 +28,6 @@ const newStudent = async (req, res) => {
         const { teacherId } = req.params;
         
         const teacher = await teacherModel.findById(teacherId);
-        // const teacher = await decodeTokenT(token);
         
         if (!teacher) {
             return res.status(404).json({ message: 'Teacher not found' });
@@ -54,11 +53,11 @@ const newStudent = async (req, res) => {
         const student = new studentModel(data);
         const tokens = await genToken(student, '1d');
         student.token = tokens;
-        student.link = teacher;
+        student.link = teacher._id;
 
         await student.save();
         
-        teacher.students.push(student);
+        teacher.students.push(student._id);
         await teacher.save();
         
         const subject = 'ProgressPal - welcome!';
@@ -77,7 +76,7 @@ const newStudent = async (req, res) => {
         });
     } catch (error) {
         res.status(500).json({
-            messageaaa: error.message
+            message: error.message
         });
     }
 };

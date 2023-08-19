@@ -84,7 +84,7 @@ const validateStudent = async (req, res, next)=>{
         next();
     } catch (error) {
         res.status(500).json({
-            messagebbb: 'Internal server error.'
+            message: 'Internal server error.'
         })
     }
 };

@@ -37,6 +37,9 @@ const newTeacher = async (req, res) => {
 
         const school = await decodeToken(token);
 
+        // console.log(school)
+
+
         const {
             teacherName,
             teacherClass,
@@ -67,11 +70,10 @@ const newTeacher = async (req, res) => {
 
         const teacher = new teacherModel(data);
         const tokens = await genToken(teacher, '1d');
-        // teacher.token = tokens;
-        teacher.link = school;
+        teacher.link = school._id;
         const savedTeacher = await teacher.save();
 
-        school.teachers.push(teacher);
+        school.teachers.push(teacher._id);
         await school.save();
 
         const subject = 'ProgressPal - welcome!';

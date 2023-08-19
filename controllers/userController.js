@@ -24,9 +24,7 @@ const register = async (req, res)=>{
         } = req.body;
         
 
-        
         if (req.files) {
-            // console.log(req.files)
             const userLogo = req.files.schoolLogo.tempFilePath
             const uploadLogo = await cloudinary.uploader.upload(userLogo);
             const salt = await bcrypt.genSalt(10);
@@ -40,14 +38,9 @@ const register = async (req, res)=>{
                 confirmPassword: hashConfirmPassword
             }
             const user = new userModel(data);
-            // const tokens = await genTokensignUp(user)
-            // user.token = tokens;
             const savedUser = await user.save();
             const token = await genToken(savedUser._id, '1d');
             const subject = 'ProgressPal - Kindly Verify your School Registration'
-            // const link = `${req.protocol}://${req.get('host')}/progressPal/verify/${savedUser._id}/${token}`
-            // const link = `https://progresspalproject.onrender.com/#/verified_success/${savedUser._id}/${token}`
-            // const link = `${req.protocol}://${req.get('host')}/progressPal/verify/${token}`
             const link = `https://progresspalproject.onrender.com/#/verified_success/${token}`
             const html = await genEmailReg(link)
             emailSender({
@@ -76,15 +69,10 @@ const register = async (req, res)=>{
             user.password = hashPassword
             user.confirmPassword = hashConfirmPassword
             
-            // const tokens = await genTokensignUp(user)
-            // user.token = tokens;
+
             const savedUser = await user.save();
             const token = await genToken(savedUser._id, '1d');
             const subject = 'ProgressPal - Kindly Verify your School Registration'
-            // const link = `${req.protocol}://${req.get('host')}/progressPal/verify/${savedUser._id}/${token}`
-            // const link = `https://progresspalproject.onrender.com/#/verified_success/${savedUser._id}/${token}`
-            // const link = `https://progresspalproject.onrender.com/#/verified_success/${token}`
-            // const link = `${req.protocol}://${req.get('host')}/progressPal/verify/${token}`
             const link = `https://progresspalproject.onrender.com/#/verified_success/${token}`
             const html = await genEmailReg(link)
             emailSender({
@@ -118,8 +106,6 @@ const register = async (req, res)=>{
 const verifyEmail = async (req, res)=>{
     try {
         const { token } = req.params;
-        // const { schoolId } = req.params;
-
         const userInfo = await decodeToken(token);
         if (!userInfo) {
             throw new Error("error verifying user, try again");
@@ -161,10 +147,6 @@ const resendEmailVerification = async (req, res)=>{
             } else {
                 const token = await genToken(user._id, '1d')
                 const subject = 'ProgressPal - Kindly Verify your School Registration'
-                // const link = `${req.protocol}://${req.get('host')}/progressPal/verify/${user._id}/${token}`
-                // const link = `https://progresspalproject.onrender.com/#/verified_success/${user._id}/${token}`
-                // const link = `https://progresspalproject.onrender.com/#/verified_success/${token}`
-                // const link = `${req.protocol}://${req.get('host')}/progressPal/verify/${token}`
                 const link = `https://progresspalproject.onrender.com/#/verified_success/${token}`
                 const html = await genEmailReg(link)
                 emailSender({
@@ -200,10 +182,7 @@ const logIn = async(req, res)=>{
             if(!user.isVerified) {
                 const token = await genToken(user._id, '1d');
                 const subject = 'ProgressPal - Kindly Verify your School Registration'
-                // const link = `${req.protocol}://${req.get('host')}/progressPal/verify/${user._id}/${token}`
-                // const link = `https://progresspalproject.onrender.com/#/verified_success/${user._id}/${token}`
                 const link = `https://progresspalproject.onrender.com/#/verified_success/${token}`
-                // const link = `${req.protocol}://${req.get('host')}/progressPal/verify/${token}`
                 const html = await genEmailReg(link)
                 emailSender({
                     email: user.schoolEmail,
@@ -330,12 +309,8 @@ const teacherLink = async (req, res)=>{
         const { teacherEmail } = req.body;
         const { schoolId } = req.params;
         const token = await genToken(schoolId, '1d');
-        // console.log(token);
         const subject = 'ProgressPal - Teacher Registration'
-        // const link = `${req.protocol}://${req.get('host')}/progressPal/newTeacher/${schoolId}/${token}`
-        // const link = `https://progresspalproject.onrender.com/#/teacher_signup/schoolId/${token}`
         const link = `https://progresspalproject.onrender.com/#/teacher_signup/${token}`
-        // const link = `${req.protocol}://${req.get('host')}/progressPal/newTeacher/${token}`
         const html = await genTeacherEmail(link, schoolId)
         emailSender({
             email: teacherEmail,
@@ -394,7 +369,6 @@ const updateSchool = async (req, res)=>{
             }
 
             if (req.files) {
-                // const userLogo = req.file.path;
                 const userLogo = req.files.schoolLogo.tempFilePath
                 const public_id = user.schoolLogo.split('/').pop().split('.')[0];
                 await cloudinary.uploader.destroy(public_id);
