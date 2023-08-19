@@ -116,8 +116,8 @@ route.post("/forgot-passwordTeacher", forgotPassValTeacher, forgotPasswordTeache
 route.put("/reset-passwordTeacher/:token", changePassValTeacher, resetPasswordTeacher);
 route.put('/updateTeacher/:teacherId', userAuthT, updateTeacherInfoMiddleware, updateSchoolTeacher)
 route.delete('/deleteTeacher/:teacherId', userAuthT, deleteSchoolTeacher)
-route.get('/readAllTeachers', userAuthT, readAllTeachers);
-route.get('/readOneTeacher/:teacherId', userAuthT,  readOneTeacher);
+route.get('/readAllTeachers', readAllTeachers);
+route.get('/readOneTeacher/:teacherId', readOneTeacher);
 
 
 
