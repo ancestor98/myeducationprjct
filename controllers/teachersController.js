@@ -394,7 +394,7 @@ const readOneTeacher = async (req, res)=>{
     try {
         const teacherId = req.params.teacherId;
         const teachers = await teacherModel.findById(teacherId)
-        if (teachers == 0) {
+        if (!teachers) {
             res.status(404).json({
                 message: 'No teacher Record'
             })
