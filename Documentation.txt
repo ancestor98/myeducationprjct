@@ -80,6 +80,7 @@ Change Password: https://progresspal-8rxj.onrender.com/progressPal/changePasswor
 Forgot Password: https://progresspal-8rxj.onrender.com/progressPal/forgot-password                      // Post Method
 Reset Password: https://progresspal-8rxj.onrender.com/progressPal/reset-password/:token             // Put Method
 Teacher Link: https://progresspal-8rxj.onrender.com/progressPal/teacherLink/:schoolId                         // Post Method
+School Teacher: https://progresspal-8rxj.onrender.com/progressPal/schoolTeachers/:schoolId              // Get Method
 
 At this point of registration for teachers: The school's ID and TOKEN should be caught dynamically from the route, at the submit button.
 
