@@ -522,6 +522,29 @@ const signOut = async (req, res)=>{
 
 
 
+const schoolTeachers = async (req, res)=>{
+    try {
+        const { schoolId } = req.params;
+        const school = await userModel.findById(schoolId).populate('teachers'); 
+        // console.log(school)
+        // console.log(school.teachers)
+        if (school.teachers.length == 0) {
+            res.status(400).json({
+                message: 'No teacher Recorded at the moment'
+            })
+        } else {
+            res.status(200).json({
+                message: 'All teachers recorded for this school',
+                data: school.teachers
+            })
+        }
+    } catch (error) {
+        res.status(500).json({
+            message: error.message
+        })
+    }
+}
+
 
 
 
@@ -540,5 +563,6 @@ module.exports = {
     deleteSchool,
     teacherLink,
     readAllSchools,
-    readOneSchool
+    readOneSchool,
+    schoolTeachers
 };

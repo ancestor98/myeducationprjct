@@ -46,7 +46,8 @@ const {
     deleteSchool,
     teacherLink,
     readAllSchools,
-    readOneSchool
+    readOneSchool,
+    schoolTeachers
 } = require('../controllers/userController');
 const {
     newTeacher,
@@ -105,6 +106,7 @@ route.delete('/deleteSchool/:schoolId', userAuth, deleteSchool)
 route.post('/teacherLink/:schoolId', userAuth, teacherEmailVal, teacherLink)
 route.get('/readAllSchools', readAllSchools);
 route.get('/readOneSchool/:schoolId', readOneSchool);
+route.get('/schoolTeachers/:schoolId', schoolTeachers);
 
 
 // Route for Teachers Alone.
