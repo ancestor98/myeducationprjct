@@ -78,7 +78,8 @@ const newTeacher = async (req, res) => {
 
         const subject = 'ProgressPal - welcome!';
         const link = 'https://progresspal-8rxj.onrender.com';
-        const html = await genEmailReg(link, savedTeacher);
+        // console.log(school.schoolName);
+        const html = await genEmailReg(link, savedTeacher, school);
 
         emailSender({
             email: teacherEmail,
@@ -414,6 +415,27 @@ const readOneTeacher = async (req, res)=>{
 
 
 
+const teacherStudents = async (req, res)=>{
+    try {
+        const { teacherId } = req.params;
+        const teacher = await teacherModel.findById(teacherId).populate('students'); 
+        if (teacher.students.length == 0) {
+            res.status(400).json({
+                message: 'No Student Recorded at the moment'
+            })
+        } else {
+            res.status(200).json({
+                message: 'All Students recorded for this school',
+                data: teacher.students
+            })
+        }
+    } catch (error) {
+        res.status(500).json({
+            message: error.message
+        })
+    }
+}
+
 
 
 
@@ -435,5 +457,6 @@ module.exports = {
     deleteSchoolTeacher,
     signOutTeacher,
     readAllTeachers,
-    readOneTeacher
+    readOneTeacher,
+    teacherStudents
 }

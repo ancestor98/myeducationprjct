@@ -59,7 +59,8 @@ const {
     deleteSchoolTeacher,
     signOutTeacher,
     readAllTeachers,
-    readOneTeacher
+    readOneTeacher,
+    teacherStudents
 } = require('../controllers/teachersController')
 const { 
     newStudent,
@@ -120,7 +121,7 @@ route.put('/updateTeacher/:teacherId', userAuthT, updateTeacherInfoMiddleware, u
 route.delete('/deleteTeacher/:teacherId', userAuthT, deleteSchoolTeacher)
 route.get('/readAllTeachers', readAllTeachers);
 route.get('/readOneTeacher/:teacherId', readOneTeacher);
-
+route.get('/teacherStudents/:teacherId', teacherStudents);
 
 
 // Route for Students Alone.

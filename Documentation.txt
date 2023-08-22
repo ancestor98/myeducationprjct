@@ -92,6 +92,7 @@ signOut: https://progresspal-8rxj.onrender.com/progressPal/logoutTeacher/:teache
 Change Password: https://progresspal-8rxj.onrender.com/progressPal/changePasswordTeacher/:teacherId                // Put Method
 Forgot Password: https://progresspal-8rxj.onrender.com/progressPal/forgot-passwordTeacher                   // Post Method
 Reset Password: https://progresspal-8rxj.onrender.com/progressPal/reset-passwordTeacher/:token          // Put Method
+Teacher Students: https://progresspal-8rxj.onrender.com/progressPal/teacherStudents/:teacherId              // Get Method
 
 
 
