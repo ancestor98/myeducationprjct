@@ -448,11 +448,11 @@ const schoolStudents = async (req, res) => {
         });
 
         if (!school) {
-            res.status(404).json({
+            return res.status(404).json({
                 message: 'School not found'
             });
         } else if (school.teachers.length === 0) {
-            res.status(400).json({
+            return res.status(400).json({
                 message: 'No students recorded at the moment'
             });
         } else {
