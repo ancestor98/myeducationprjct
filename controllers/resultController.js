@@ -211,11 +211,68 @@ const deleteResult = async (req, res)=>{
 
 
 
+
+
+
+const schoolResults = async (req, res) => {
+    try {
+        const { schoolId } = req.params;
+
+        // Find the school by ID and populate its 'teachers' field
+        const school = await userModel.findById(schoolId).populate({
+            path: 'teachers',
+            populate: {
+                path: 'students', // Assuming the 'teachers' reference the 'students' collection
+                model: 'students', // Replace with the actual model name for students
+                populate: {
+                    path: 'results', // Assuming the 'students' reference the 'results' collection
+                    model: 'results' // Replace with the actual model name for results
+                }
+            }
+        });
+
+        if (!school) {
+            res.status(404).json({
+                message: 'School not found'
+            });
+        } else if (school.teachers.length === 0) {
+            res.status(400).json({
+                message: 'No students recorded at the moment'
+            });
+        } else {
+            // Collect all results from students' results references
+            const allResults = school.teachers.flatMap(teacher =>
+                teacher.students.flatMap(student => student.results)
+            );
+
+            res.status(200).json({
+                message: 'All results recorded for this school',
+                data: allResults
+            });
+        }
+    } catch (error) {
+        res.status(500).json({
+            message: error.message
+        });
+    }
+};
+
+
+
+
+
+
+
+
+
+
+
 module.exports = {
     createResult,
     studentAllResult,
     allResults,
     oneResult,
     updateResult,
-    deleteResult
+    deleteResult,
+    schoolResults
 }

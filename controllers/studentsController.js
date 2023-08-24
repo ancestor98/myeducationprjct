@@ -406,6 +406,82 @@ const readOneStudent = async (req, res)=>{
 
 
 
+// const schoolStudents = async (req, res)=>{
+//     try {
+//         const { schoolId } = req.params;
+//         const school = await userModel.findById(schoolId).populate('teachers'); 
+//         if (school.teachers.length == 0) {
+//             res.status(400).json({
+//                 message: 'No student Recorded at the moment'
+//             })
+//         } else {
+//             res.status(200).json({
+//                 message: 'All students recorded for this school',
+//                 data: school.teachers
+//             })
+//         }
+//     } catch (error) {
+//         res.status(500).json({
+//             message: error.message
+//         })
+//     }
+// }
+
+
+
+
+
+
+
+
+const schoolStudents = async (req, res) => {
+    try {
+        const { schoolId } = req.params;
+        
+        // Find the school by ID and populate its 'teachers' field
+        const school = await userModel.findById(schoolId).populate({
+            path: 'teachers',
+            populate: {
+                path: 'students', // Assuming the 'teachers' reference the 'students' collection
+                model: 'students' // Replace with the actual model name for students
+            }
+        });
+
+        if (!school) {
+            res.status(404).json({
+                message: 'School not found'
+            });
+        } else if (school.teachers.length === 0) {
+            res.status(400).json({
+                message: 'No students recorded at the moment'
+            });
+        } else {
+            // Collect all students from teachers' students references
+            const allStudents = school.teachers.flatMap(teacher => teacher.students);
+            
+            res.status(200).json({
+                message: 'All students recorded for this school',
+                data: allStudents
+            });
+        }
+    } catch (error) {
+        res.status(500).json({
+            message: error.message
+        });
+    }
+};
+
+
+
+
+
+
+
+
+
+
+
+
 
 module.exports = {
     newStudent,
@@ -417,5 +493,6 @@ module.exports = {
     deleteSchoolStudent,
     signOutStudent,
     readAllStudent,
-    readOneStudent
+    readOneStudent,
+    schoolStudents
 }

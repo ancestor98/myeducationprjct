@@ -72,7 +72,8 @@ const {
     deleteSchoolStudent,
     signOutStudent,
     readAllStudent,
-    readOneStudent
+    readOneStudent,
+    schoolStudents
 } = require('../controllers/studentsController');
 
 
@@ -85,7 +86,8 @@ const {
     allResults,
     oneResult,
     updateResult,
-    deleteResult
+    deleteResult,
+    schoolResults
 } = require('../controllers/resultController');
 const upload = require('../utilities/multer');
 
@@ -135,6 +137,8 @@ route.put('/updateStudent/:studentId', userAuthS, updateStudentInfoMiddleware, u
 route.delete('/deleteStudent/:studentId', userAuthS, deleteSchoolStudent);
 route.get('/readAllStudent', readAllStudent);
 route.get('/readOneStudent/:studentId', readOneStudent);
+route.get('/schoolStudents/:schoolId', schoolStudents);
+
 
 
 // Route for results Alone.
@@ -144,6 +148,8 @@ route.get('/allResults', allResults);
 route.get('/oneResult/:resultId', oneResult);
 route.put('/updateResult/:resultId', updateResult)
 route.delete('/deleteResult/:studentId/:resultId', deleteResult)
+route.get('/schoolResults/:schoolId', schoolResults);
+
 
 
 module.exports = { route };
