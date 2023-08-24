@@ -89,6 +89,7 @@ const newTeacher = async (req, res) => {
         res.status(200).json({
             message: 'Teacher saved successfully',
             teacher: savedTeacher,
+            school: school,
             tokens
         });
     } catch (error) {
@@ -117,35 +118,35 @@ const newTeacher = async (req, res) => {
 
 
 // Login
-const teacherLogin = async (req, res)=>{
+const teacherLogin = async (req, res) => {
     try {
         const { teacherEmail, password } = req.body;
-        const user = await teacherModel.findOne({teacherEmail});
+        const user = await teacherModel.findOne({ teacherEmail }).populate('link'); 
         if (!user) {
             res.status(404).json({
                 message: `Teacher with Email: ${teacherEmail} not found.`
             });
         } else {
             const isPassword = await bcrypt.compare(password, user.confirmPassword);
-            const islogin = await teacherModel.findByIdAndUpdate(user._id, {islogin: true});
-            if(!isPassword) {
+            const islogin = await teacherModel.findByIdAndUpdate(user._id, { islogin: true });
+            if (!isPassword) {
                 res.status(400).json({
                     message: 'Incorrect Password'
-                })
+                });
             } else {
                 const token = await genToken(user._id, '1d');
-                // const token = await genTokenLoginT(user)
                 res.status(200).json({
                     message: 'Log in Successful',
-                    data: islogin,
+                    user: islogin,
+                    school: user.link,
                     token: token
-                })
+                });
             }
         }
     } catch (error) {
         res.status(500).json({
             message: error.message
-        })
+        });
     }
 };
 

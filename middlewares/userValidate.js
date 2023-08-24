@@ -29,10 +29,13 @@ const validateInputsMiddleware = async (req, res, next) => {
         if (!schoolName) {
             return res.status(400).json({ message: `School Name of school must be filled.` });
         }
-        if (schoolName.length < 8) {
+        if (schoolName.length < 6) {
             return res.status(400).json({ message: `Please pass a correct school name.` });
         }
-        if (!/^[a-zA-Z0-9\s]+$/.test(schoolName)) {
+        // if (!/^[a-zA-Z0-9\s]+$/.test(schoolName)) {
+        //     return res.status(400).json({ message: `Invalid school name format.` });
+        // }
+        if (!/^(?=.*[a-zA-Z0-9])[-a-zA-Z0-9\s]+$/.test(schoolName)) {
             return res.status(400).json({ message: `Invalid school name format.` });
         }
 

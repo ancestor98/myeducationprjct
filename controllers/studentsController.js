@@ -86,35 +86,42 @@ const newStudent = async (req, res) => {
 
 
 // Login
-const studentLogin = async (req, res)=>{
+const studentLogin = async (req, res) => {
     try {
         const { studentEmail, password } = req.body;
-        const user = await studentModel.findOne({studentEmail});
+        const user = await studentModel.findOne({ studentEmail }).populate('link');
+
         if (!user) {
             res.status(404).json({
                 message: `Student with Email: ${studentEmail} not found.`
             });
         } else {
             const isPassword = await bcrypt.compare(password, user.password);
-            const islogin = await studentModel.findByIdAndUpdate(user._id, {islogin: true});
-            if(!isPassword) {
+            const islogin = await studentModel.findByIdAndUpdate(user._id, { islogin: true });
+
+            if (!isPassword) {
                 res.status(400).json({
                     message: 'Incorrect Password'
-                })
+                });
             } else {
-                // const token = await genToken(user._id, '30m');
-                const token = await genToken(user, '1d')
+                // Populate the nested relationship inside the 'link' field
+                await user.link.populate('link');
+
+                const token = await genToken(user, '1d');
+
                 res.status(200).json({
                     message: 'Log in Successful',
-                    data: islogin,
+                    user: islogin,
+                    teacher: user.link, // Access the populated 'link' data directly from the user object
+                    school: user.link.link, // Access the populated nested reference
                     token: token
-                })
+                });
             }
         }
     } catch (error) {
         res.status(500).json({
             message: error.message
-        })
+        });
     }
 };
 
