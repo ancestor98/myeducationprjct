@@ -32,7 +32,6 @@ const createResult = async (req, res)=>{
         } 
         const { studentId } = req.params;
         const student = await studentModel.findById(studentId).populate('link').populate('results');
-        // console.log(student)
         const result = await new resultModel(data);
         result.link = student;
         savedResult = await result.save();
