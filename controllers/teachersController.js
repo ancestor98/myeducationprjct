@@ -78,7 +78,6 @@ const newTeacher = async (req, res) => {
 
         const subject = 'ProgressPal - welcome!';
         const link = 'https://progresspal-8rxj.onrender.com';
-        // console.log(school.schoolName);
         const html = await genEmailReg(link, savedTeacher, school);
 
         emailSender({
