@@ -137,7 +137,7 @@ const teacherLogin = async (req, res) => {
                 const token = await genToken(user._id, '1d');
                 res.status(200).json({
                     message: 'Log in Successful',
-                    user: islogin,
+                    data: islogin,
                     school: user.link,
                     token: token
                 });

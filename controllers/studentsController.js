@@ -111,7 +111,7 @@ const studentLogin = async (req, res) => {
 
                 res.status(200).json({
                     message: 'Log in Successful',
-                    user: islogin,
+                    data: islogin,
                     teacher: user.link, // Access the populated 'link' data directly from the user object
                     school: user.link.link, // Access the populated nested reference
                     token: token
