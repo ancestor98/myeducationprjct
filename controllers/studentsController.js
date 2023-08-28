@@ -116,7 +116,7 @@ const newStudent = async (req, res) => {
         if (school.isPaid === false) {
             // Check the number of students associated with the teacher
             const studentsCount = await studentModel.countDocuments({ link: teacherId });
-            if (studentsCount === 1) {
+            if (studentsCount === 10) {
                 return res.status(400).json({
                     message: "Teacher has reached the maximum allowed number of students."
                 });
