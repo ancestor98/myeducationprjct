@@ -354,7 +354,6 @@ const teacherLink = async (req, res)=>{
         const school = await userModel.findById(schoolId);
         if(school.isPaid === false) {
             const teachersCount = await teacherModel.countDocuments({link: schoolId})
-            // console.log(teachersCount)
             if (teachersCount === 5) {
                 return res.status(400).json({
                     message: "School has reached the maximum allowed number of teachers."
