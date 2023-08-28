@@ -59,9 +59,10 @@ const userSchema = new mongoose.Schema({
         type: Boolean,
         default: false
     },
-    // token: {
-    //     type: String
-    // },
+    isPaid: {
+        type: Boolean,
+        default: false
+    },
     isLogin: {
         type: Boolean,
         default: false

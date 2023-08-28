@@ -1,5 +1,6 @@
 require('dotenv').config();
 const userModel = require('../models/userModel');
+const teacherModel = require('../models/teachersModel');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken')
 const fs = require('fs');
@@ -303,29 +304,112 @@ const resetPassword = async (req, res)=>{
 
 
 
+// // Link for Registering a Teacher on ProgressPal.
+// const teacherLink = async (req, res)=>{
+//     try {
+//         const { teacherEmail } = req.body;
+//         const { schoolId } = req.params;
+//         const token = await genToken(schoolId, '1d');
+//         const subject = 'ProgressPal - Teacher Registration'
+//         const link = `https://progresspalproject.onrender.com/#/teacher_signup/${token}`
+//         const html = await genTeacherEmail(link, schoolId)
+//         emailSender({
+//             email: teacherEmail,
+//             subject,
+//             html
+//         })
+//         res.status(200).json({
+//             message: `Link for registration successfully sent to ${teacherEmail}`
+//         })
+//     } catch (error) {
+//         res.status(500).json({
+//             message: error.message
+//         })
+//     }
+// }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 // Link for Registering a Teacher on ProgressPal.
 const teacherLink = async (req, res)=>{
     try {
         const { teacherEmail } = req.body;
         const { schoolId } = req.params;
-        const token = await genToken(schoolId, '1d');
-        const subject = 'ProgressPal - Teacher Registration'
-        const link = `https://progresspalproject.onrender.com/#/teacher_signup/${token}`
-        const html = await genTeacherEmail(link, schoolId)
-        emailSender({
-            email: teacherEmail,
-            subject,
-            html
-        })
-        res.status(200).json({
-            message: `Link for registration successfully sent to ${teacherEmail}`
-        })
+
+        const school = await userModel.findById(schoolId);
+        if(school.isPaid === false) {
+            const teachersCount = await teacherModel.countDocuments({link: schoolId})
+            // console.log(teachersCount)
+            if (teachersCount === 2) {
+                return res.status(400).json({
+                    message: "School has reached the maximum allowed number of teachers."
+                });
+            } else {
+                const token = await genToken(schoolId, '1d');
+                const subject = 'ProgressPal - Teacher Registration'
+                const link = `https://progresspalproject.onrender.com/#/teacher_signup/${token}`
+                const html = await genTeacherEmail(link, schoolId)
+                emailSender({
+                    email: teacherEmail,
+                    subject,
+                    html
+                })
+                res.status(200).json({
+                    message: `Link for registration successfully sent to ${teacherEmail}`
+                })
+            }
+        } else {
+            const token = await genToken(schoolId, '1d');
+            const subject = 'ProgressPal - Teacher Registration'
+            const link = `https://progresspalproject.onrender.com/#/teacher_signup/${token}`
+            const html = await genTeacherEmail(link, schoolId)
+            emailSender({
+                email: teacherEmail,
+                subject,
+                html
+            })
+            res.status(200).json({
+                message: `Link for registration successfully sent to ${teacherEmail}`
+            })
+        }
     } catch (error) {
         res.status(500).json({
             message: error.message
         })
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
