@@ -152,7 +152,6 @@ Update a result - https://progresspal-8rxj.onrender.com/progressPal/updateResult
 Delete a result - https://progresspal-8rxj.onrender.com/progressPal/deleteResult/:studentId/:resultId              // DELETE METHOD
 
 
-Enjoy
 
 
 
