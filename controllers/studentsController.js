@@ -369,7 +369,7 @@ const resetPasswordStudent = async (req, res)=>{
 };
 
 
- // Update School
+ // Update Student
 const updateSchoolStudent = async (req, res) => {
     try {
         const {
@@ -379,7 +379,7 @@ const updateSchoolStudent = async (req, res) => {
             studentEmail,
         } = req.body;
 
-        const userLogo = req.files.studentPassport.tempFilePath;
+        
         const { studentId } = req.params;
         const user = await studentModel.findById(studentId);
 
@@ -400,7 +400,8 @@ const updateSchoolStudent = async (req, res) => {
             students: user.students
         };
 
-        if (userLogo) {
+        if (req.files) {
+            const userLogo = req.files.studentPassport.tempFilePath;
             const public_id = user.studentPassport.split('/').pop().split('.')[0];
             await cloudinary.uploader.destroy(public_id);
             const newImage = await cloudinary.uploader.upload(userLogo);
