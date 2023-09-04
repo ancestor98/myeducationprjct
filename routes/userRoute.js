@@ -120,7 +120,7 @@ route.put("/changePasswordTeacher/:teacherId", userAuthT, changePassValTeacher, 
 route.post("/forgot-passwordTeacher", forgotPassValTeacher, forgotPasswordTeacher);
 route.put("/reset-passwordTeacher/:token", changePassValTeacher, resetPasswordTeacher);
 route.put('/updateTeacher/:teacherId', userAuthT, updateTeacherInfoMiddleware, updateSchoolTeacher)
-route.delete('/deleteTeacher/:teacherId', userAuthT, deleteSchoolTeacher)
+route.delete('/deleteTeacher/:teacherId', deleteSchoolTeacher)
 route.get('/readAllTeachers', readAllTeachers);
 route.get('/readOneTeacher/:teacherId', readOneTeacher);
 route.get('/teacherStudents/:teacherId', teacherStudents);
@@ -134,7 +134,7 @@ route.put("/changePasswordStudent/:studentId", userAuthS, changePassValStudent, 
 route.post("/forgot-passwordStudent", forgotPasswordStudent);
 route.put("/reset-passwordStudent/:studentId/:token", changePassValStudent, resetPasswordStudent);
 route.put('/updateStudent/:studentId', userAuthS, updateStudentInfoMiddleware, updateSchoolStudent);
-route.delete('/deleteStudent/:studentId', userAuthS, deleteSchoolStudent);
+route.delete('/deleteStudent/:studentId', deleteSchoolStudent);
 route.get('/readAllStudent', readAllStudent);
 route.get('/readOneStudent/:studentId', readOneStudent);
 route.get('/schoolStudents/:schoolId', schoolStudents);
