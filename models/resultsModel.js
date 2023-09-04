@@ -127,6 +127,12 @@ const resultSchema = mongoose.Schema({
     teachersRemark: {
         type: String
     },
+    resultYear: {
+        type: String
+    },
+    resultTerm: {
+        type: String
+    },
     link: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'students'

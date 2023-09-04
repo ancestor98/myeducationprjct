@@ -21,21 +21,20 @@ const createResult = async (req, res)=>{
             subTest1, subTest2, subTest3, subTest4, subTest5, subTest6, subTest7, subTest8, subTest9, subTest10,
             subExam1, subExam2, subExam3, subExam4, subExam5, subExam6, subExam7, subExam8, subExam9, subExam10,
             subTotal1, subTotal2, subTotal3, subTotal4, subTotal5, subTotal6, subTotal7, subTotal8, subTotal9, subTotal10,
-            resultTotal, teachersRemark
+            resultTotal, teachersRemark, resultYear, resultTerm
         } = req.body;
         const data = {
             subName1, subName2, subName3, subName4, subName5, subName6, subName7, subName8, subName9, subName10,
             subTest1, subTest2, subTest3, subTest4, subTest5, subTest6, subTest7, subTest8, subTest9, subTest10,
             subExam1, subExam2, subExam3, subExam4, subExam5, subExam6, subExam7, subExam8, subExam9, subExam10,
             subTotal1, subTotal2, subTotal3, subTotal4, subTotal5, subTotal6, subTotal7, subTotal8, subTotal9, subTotal10,
-            resultTotal, teachersRemark
+            resultTotal, teachersRemark, resultYear, resultTerm
         } 
         const { studentId } = req.params;
         const student = await studentModel.findById(studentId).populate('link').populate('results');
         const result = await new resultModel(data);
-        result.link = student;
-        savedResult = await result.save();
-        student.results.push(savedResult);
+        result.link = student._id;await result.save();
+        student.results.push(result._id);
         student.save();
         if (!result){
             res.status(400).json({
@@ -44,7 +43,7 @@ const createResult = async (req, res)=>{
         } else {
             res.status(201).json({
                 message: 'Success creating student result',
-                data
+                data: result
             })
         }
     } catch (error) {
@@ -137,7 +136,7 @@ const updateResult = async (req, res)=>{
             subTest1, subTest2, subTest3, subTest4, subTest5, subTest6, subTest7, subTest8, subTest9, subTest10,
             subExam1, subExam2, subExam3, subExam4, subExam5, subExam6, subExam7, subExam8, subExam9, subExam10,
             subTotal1, subTotal2, subTotal3, subTotal4, subTotal5, subTotal6, subTotal7, subTotal8, subTotal9, subTotal10,
-            resultTotal, teachersRemark
+            resultTotal, teachersRemark, resultYear, resultTerm
         } = req.body;
         const result = await resultModel.findById(resultId);
         if (!result) {
@@ -150,7 +149,7 @@ const updateResult = async (req, res)=>{
                 subTest1: subTest1 || result.subTest1, subTest2: subTest2 || result.subTest2, subTest3: subTest3 || result.subTest3, subTest4: subTest4 || result.subTest4, subTest5: subTest5 || result.subTest5, subTest6: subTest6 || result.subTest6, subTest7: subTest7 || result.subTest7, subTest8: subTest8 || result.subTest8, subTest9: subTest9 || result.subTest9, subTest10: subTest10 || result.subTest10,
                 subExam1: subExam1 || result.subExam1, subExam2: subExam2 || result.subExam2, subExam3: subExam3 || result.subExam3, subExam4: subExam4 || result.subExam4, subExam5: subExam5 || result.subExam5, subExam6: subExam6 || result.subExam6, subExam7: subExam7 || result.subExam7, subExam8: subExam8 || result.subExam8, subExam9: subExam9 || result.subExam9, subExam10: subExam10 || result.subExam10,
                 subTotal1: subTotal1 || result.subTotal1, subTotal2: subTotal2 || result.subTotal2, subTotal3: subTotal3 || result.subTotal3, subTotal4: subTotal4 || result.subTotal4, subTotal5: subTotal5 || result.subTotal5, subTotal6: subTotal6 || result.subTotal6, subTotal7: subTotal7 || result.subTotal7, subTotal8: subTotal8 || result.subTotal8, subTotal9: subTotal9 || result.subTotal9, subTotal10: subTotal10 || result.subTotal10,
-                resultTotal: resultTotal || result.resultTotal, teachersRemark: teachersRemark || result.teachersRemark
+                resultTotal: resultTotal || result.resultTotal, teachersRemark: teachersRemark || result.teachersRemark, resultYear: resultYear || result.resultYear, resultTerm: resultTerm || result.resultTerm
             }
             const updatedResult = await resultModel.findByIdAndUpdate(resultId, data, {new: true});
             if (!updatedResult) {
