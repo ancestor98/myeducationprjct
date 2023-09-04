@@ -139,8 +139,8 @@ const newStudent = async (req, res) => {
                 }
         
                 const student = new studentModel(data);
-                const tokens = await genToken(student, '1d');
-                student.token = tokens;
+                // const tokens = await genToken(student, '1d');
+                // student.token = tokens;
                 student.link = teacher._id;
         
                 await student.save();
@@ -182,8 +182,8 @@ const newStudent = async (req, res) => {
             }
     
             const student = new studentModel(data);
-            const tokens = await genToken(student, '1d');
-            student.token = tokens;
+            // const tokens = await genToken(student, '1d');
+            // student.token = tokens;
             student.link = teacher._id;
     
             await student.save();
