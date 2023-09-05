@@ -111,7 +111,7 @@ route.post('/teacherLink/:schoolId', userAuth, teacherEmailVal, teacherLink)
 route.get('/readAllSchools', readAllSchools);
 route.get('/readOneSchool/:schoolId', readOneSchool);
 route.get('/schoolTeachers/:schoolId', schoolTeachers);
-
+route.put('/payment/:schoolId', isPaid)
 
 
 // Route for Teachers Alone.
