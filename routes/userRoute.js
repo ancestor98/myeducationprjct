@@ -113,6 +113,7 @@ route.get('/readOneSchool/:schoolId', readOneSchool);
 route.get('/schoolTeachers/:schoolId', schoolTeachers);
 
 
+
 // Route for Teachers Alone.
 route.post('/newTeacher/:token', validateteacher, newTeacher)
 route.post('/login/teacher', loginValTeacher, teacherLogin)
