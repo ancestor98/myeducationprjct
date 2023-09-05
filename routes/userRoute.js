@@ -47,7 +47,8 @@ const {
     teacherLink,
     readAllSchools,
     readOneSchool,
-    schoolTeachers
+    schoolTeachers,
+    isPaid
 } = require('../controllers/userController');
 const {
     newTeacher,
