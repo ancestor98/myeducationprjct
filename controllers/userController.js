@@ -608,11 +608,18 @@ const signOut = async (req, res)=>{
 const isPaid = async (req, res)=>{
     try {
         const { schoolId } = req.params;
+        const paying = await userModel.findByIdAndUpdate(schoolId, {isPaid: true}); 
         const paid = await userModel.findByIdAndUpdate(schoolId, {isPaid: true}); 
-        res.status(200).json({
-            message: 'Congratulations, You are now on a Premium account',
-            data: paid
-        })
+        if (!paid) {
+            res.status(200).json({
+                message: 'Error Occured during payment account, Try Again.'
+            })
+        } else {
+            res.status(200).json({
+                message: 'Congratulations, You are now on a Premium account',
+                data: paid
+            })
+        }
     } catch (error) {
         res.status(500).json({
             message: error.message
