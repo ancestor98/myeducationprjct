@@ -233,16 +233,6 @@ const newStudent = async (req, res) => {
 
 
 
-
-
-
-
-
-
-
-
-
-
 // Login
 const studentLogin = async (req, res) => {
     try {
