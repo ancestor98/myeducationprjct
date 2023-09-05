@@ -604,6 +604,23 @@ const signOut = async (req, res)=>{
 };
 
 
+// Payment
+const isPaid = async (req, res)=>{
+    try {
+        const { schoolId } = req.params;
+        const paid = await userModel.findByIdAndUpdate(schoolId, {isPaid: true}); 
+        res.status(200).json({
+            message: 'Congratulations, You are now on a Premium account',
+            data: paid
+        })
+    } catch (error) {
+        res.status(500).json({
+            message: error.message
+        })
+    }
+};
+
+
 
 const schoolTeachers = async (req, res)=>{
     try {
@@ -645,5 +662,6 @@ module.exports = {
     teacherLink,
     readAllSchools,
     readOneSchool,
-    schoolTeachers
+    schoolTeachers,
+    isPaid
 };
