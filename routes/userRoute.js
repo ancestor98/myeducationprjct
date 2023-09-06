@@ -134,7 +134,7 @@ route.post('/login/student', loginValStudent, studentLogin)
 route.post('/logoutStudent/:studentId', signOutStudent)
 route.put("/changePasswordStudent/:studentId", userAuthS, changePassValStudent, changePasswordStudent);
 route.post("/forgot-passwordStudent", forgotPasswordStudent);
-route.put("/reset-passwordStudent/:studentId/:token", changePassValStudent, resetPasswordStudent);
+route.put("/reset-passwordStudent/:token", changePassValStudent, resetPasswordStudent);
 // route.put('/updateStudent/:studentId', userAuthS, updateStudentInfoMiddleware, updateSchoolStudent);
 route.put('/updateStudent/:studentId', updateSchoolStudent);
 route.delete('/deleteStudent/:studentId', deleteSchoolStudent);

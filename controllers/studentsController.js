@@ -6,7 +6,7 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken')
 const fs = require('fs');
 const cloudinary = require('../utilities/cloudinary');
-const { genToken, decodeToken, decodeTokenT } = require('../utilities/jwt');
+const { genToken, decodeToken, decodeTokenT, decodeTokenS } = require('../utilities/jwt');
 const emailSender = require('../middlewares/email');
 const { forgetPassEmail } = require('../utilities/studentEmail/forgetpassword')
 const { genEmailReg } = require('../utilities/studentEmail/register')
@@ -313,7 +313,8 @@ const forgotPasswordStudent = async (req, res)=>{
         } else {
             const token = await genToken(isEmail._id, '1d')
             const subject = 'ProgressPal - Link for Reset password'
-            const link = `${req.protocol}://${req.get('host')}/progressPal/reset-passwordStudent/${isEmail._id}/${token}`
+            // const link = `${req.protocol}://${req.get('host')}/progressPal/reset-passwordStudent/${isEmail._id}/${token}`
+            const link = `https://progresspal-8rxj.onrender.com/progressPal/student_reset_password/${token}`
             // const message = `Forgot your Password? it's okay, kindly use this link ${link} to re-set your account password. Please note that this link will expire after 5(five) Minutes.`
             const html = await forgetPassEmail(link)
             emailSender({
@@ -337,11 +338,12 @@ const forgotPasswordStudent = async (req, res)=>{
 const resetPasswordStudent = async (req, res)=>{
     try {
         const { token } = req.params;
-        const { studentId } = req.params;
+        // const { studentId } = req.params;
         const { password } = req.body;
         const salt = bcrypt.genSaltSync(10);
         const hash = bcrypt.hashSync(password, salt);
-        const user = await studentModel.findByIdAndUpdate(studentId, { password: hash }, { new: true });
+        const userInfo = await decodeTokenS(token);
+        const user = await studentModel.findByIdAndUpdate(userInfo._id, { password: hash }, { new: true });
         if (!user) {
             res.status(400).json({
                 message: 'Could not Reset Password'

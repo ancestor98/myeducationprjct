@@ -57,7 +57,7 @@ const decodeTokenT = async (token)=>{
 
 
 
-// FOR TEACHERS
+// FOR STUDENTS
 const decodeTokenS = async (token)=>{
     let user = null;
     await jwt.verify(token, process.env.JWT_SECRET, async (err, data)=>{

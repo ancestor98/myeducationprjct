@@ -193,7 +193,8 @@ const forgotPasswordTeacher = async (req, res)=>{
             const token = await genToken(isEmail._id, '1d')
             const subject = 'ProgressPal - Link for Reset password'
             // const link = `${req.protocol}://${req.get('host')}/progressPal/reset-passwordTeacher/${isEmail._id}/${token}`
-            const link = `${req.protocol}://${req.get('host')}/progressPal/reset-passwordTeacher/${token}`
+            // const link = `${req.protocol}://${req.get('host')}/progressPal/reset-passwordTeacher/${token}`
+            const link = `https://progresspal-8rxj.onrender.com/progressPal/teacher_reset_password/${token}`
             // const message = `Forgot your Password? it's okay, kindly use this link ${link} to re-set your account password. Please note that this link will expire after 5(five) Minutes.`
             const html = await forgetPassEmail(link)
             emailSender({

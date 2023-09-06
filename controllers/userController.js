@@ -257,7 +257,8 @@ const forgotPassword = async (req, res)=>{
         } else {
             const token = await genToken(isEmail._id, '1d')
             const subject = 'ProgressPal - Link for Reset password'
-            const link = `${req.protocol}://${req.get('host')}/progressPal/reset-password/${token}`
+            // const link = `${req.protocol}://${req.get('host')}/progressPal/reset-password/${token}`
+            const link = `https://progresspal-8rxj.onrender.com/progressPal/school_reset_password/${token}`
             const html = await forgetPassEmail(link)
             emailSender({
                 email: schoolEmail,
