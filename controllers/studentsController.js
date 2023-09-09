@@ -16,70 +16,7 @@ const { genTokenLoginS, genTokensignUpS } = require('../middlewares/AuthandAuth/
 
 
 
-// const newStudent = async (req, res) => {
-//     try {
-//         const {
-//             studentName,
-//             studentClass,
-//             studentAge,
-//             studentEmail,
-//             password
-//         } = req.body;
-//         const { teacherId } = req.params;
-        
-//         const teacher = await teacherModel.findById(teacherId);
-        
-//         if (!teacher) {
-//             return res.status(404).json({ message: 'Teacher not found' });
-//         }
 
-//         const salt = await bcrypt.genSalt(10);
-//         const hashPassword = await bcrypt.hash(password, salt);
-
-//         const data = {
-//             studentName: studentName.toUpperCase(),
-//             studentClass,
-//             studentAge,
-//             studentEmail: studentEmail.toLowerCase(),
-//             password: hashPassword
-//         };
-
-//         if (req.files) {
-//             const studentImage = req.files.studentPassport.tempFilePath;
-//             const uploadImage = await cloudinary.uploader.upload(studentImage);
-//             data.studentPassport = uploadImage.secure_url;
-//         }
-
-//         const student = new studentModel(data);
-//         const tokens = await genToken(student, '1d');
-//         student.token = tokens;
-//         student.link = teacher._id;
-
-//         await student.save();
-        
-//         teacher.students.push(student._id);
-//         await teacher.save();
-        
-//         const subject = 'ProgressPal - welcome!';
-//         const link = `${req.protocol}://${req.get('host')}/progressPal`;
-//         const html = await genEmailReg(link, teacherId, student);
-        
-//         emailSender({
-//             email: studentEmail,
-//             subject,
-//             html
-//         });
-
-//         res.status(201).json({
-//             message: 'Student saved successfully',
-//             student
-//         });
-//     } catch (error) {
-//         res.status(500).json({
-//             message: error.message
-//         });
-//     }
-// };
 
 
 
