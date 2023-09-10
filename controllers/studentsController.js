@@ -38,7 +38,7 @@ const newStudent = async (req, res) => {
             studentAge,
             studentEmail,
             password
-        } = req.body;
+        } = req.body
         const { teacherId } = req.params;
         
         const teacher = await teacherModel.findById(teacherId);
